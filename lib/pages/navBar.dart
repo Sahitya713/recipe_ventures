@@ -31,13 +31,13 @@ class _NavbarState extends State<Navbar> {
           onTap: onTappedBar,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-                icon: Icon(Icons.favorite, size: iconSize),
+                icon: Icon(Icons.favorite, size: iconSize, color: Theme.of(context).accentColor),
                 label: 'Favourites'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.add_a_photo, size: iconSize),
+                icon: Icon(Icons.add_a_photo, size: iconSize, color: Theme.of(context).accentColor),
                 label: 'Upload Image'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.kitchen, size: iconSize), label: 'Store')
+                icon: Icon(Icons.kitchen, size: iconSize, color: Theme.of(context).accentColor), label: 'Store')
           ]),
     );
   }

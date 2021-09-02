@@ -5,10 +5,10 @@ class Favourites extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favourites'),
+        title: Text('Favourites', style: Theme.of(context).textTheme.headline6),
       ),
       body: Center(
-        child: Text('Favourites'),
+        child: Text('Favourites', style: Theme.of(context).textTheme.bodyText2),
       ),
     );
   }

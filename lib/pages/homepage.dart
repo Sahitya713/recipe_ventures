@@ -6,7 +6,7 @@ class Homepage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome'),
+        title: Text('Welcome', style: Theme.of(context).textTheme.headline6),
       ),
       body: Center(
         // child: Text('upload Image'),
@@ -14,7 +14,7 @@ class Homepage extends StatelessWidget {
             onTap: () {
               TestManager().getTest();
             },
-            child: Text('upload Image')),
+            child: Text('upload Image', style: Theme.of(context).textTheme.bodyText2)),
       ),
     );
   }

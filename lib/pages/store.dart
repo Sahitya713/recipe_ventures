@@ -5,10 +5,10 @@ class Store extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('store'),
+        title: Text('Store', style: Theme.of(context).textTheme.headline6),
       ),
       body: Center(
-        child: Text('Store'),
+        child: Text('Store', style: Theme.of(context).textTheme.bodyText2),
       ),
     );
   }
