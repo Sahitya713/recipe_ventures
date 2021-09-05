@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:recipe_ventures/pages/homepage.dart';
 import 'package:recipe_ventures/pages/navBar.dart';
 import 'package:recipe_ventures/utils/constants.dart';
 import 'package:recipe_ventures/theme/themeManager.dart';
 import 'package:provider/provider.dart';
+import 'package:recipe_ventures/pages/welcomepage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeNotifier>(
       builder: (context, theme, _) => MaterialApp(
         theme: theme.getTheme(),
-        home: Navbar(),
+        home: WelcomePage(),
         // MainPage(),
       ),
     );
