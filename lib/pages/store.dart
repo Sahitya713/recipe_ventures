@@ -138,6 +138,7 @@ class _StoreState extends State<Store> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Store', style: Theme.of(context).textTheme.headline6),
       ),
       body: // can use a list view builder to iterate and display
