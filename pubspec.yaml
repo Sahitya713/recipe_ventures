@@ -10,13 +10,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+        
+  focused_menu: ^1.0.5
   cupertino_icons: ^1.0.2
   firebase_core: ^1.0.1
   firebase_auth: ^1.0.1
   cloud_firestore: ^1.0.1
   provider: ^4.3.1
   intl: ^0.17.0
+  http: ^0.13.3
+  image_picker: ^0.8.4
 
 dev_dependencies:
   flutter_test:
@@ -24,5 +27,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/burger.png
 
 
