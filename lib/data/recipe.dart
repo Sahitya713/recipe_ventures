@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 class Recipe {
   final int id;
   final bool vegetarian;
@@ -51,10 +49,11 @@ class Recipe {
       servings: res['servings'] ?? null,
       image: res['image'] ?? null,
       imageType: res['imageType'] ?? null,
-      nutrients: res['nutrition']['nutrients'] ?? null,
+      nutrients: res['nutrition']['nutrients'] ?? [],
       ingredients: res['extendedIngredients']
-          .map((ingredient) => ingredient["original"])
-          .toList(),
+              .map((ingredient) => ingredient["original"])
+              .toList() ??
+          [],
       summary: res['summary'] ?? null,
       instructions: res['instructions'] ?? null,
     );

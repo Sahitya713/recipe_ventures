@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:recipe_ventures/data/recipe.dart';
 
-class RecipeManager {
+class RecipeController {
   Future generateRecipes(List<String> ingredients) async {
     var url = Uri.https('api.spoonacular.com', '/recipes/findByIngredients', {
       "apiKey": "fdaee5a82b29439689e4bda0644cc60f",

@@ -1,7 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:recipe_ventures/controllers/userController.dart';
 
 class AuthenticationController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  User getCurrUserFromFirebase() {
+    try {
+      return _auth.currentUser;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
 
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
@@ -26,17 +35,18 @@ class AuthenticationController {
   }
 
   Future<dynamic> registerWithEmailAndPassword(
-      String email, String password) async {
+      String displayName, String email, String password) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       User user = result.user;
       await user.sendEmailVerification();
+
       // create a new doc for the user with new id
-      return user;
-      // return _userFromFirebaseUser(user);
+      String createUser =
+          await UserController().createUser(displayName, email, user.uid);
+      return createUser;
     } catch (e) {
-      // print(e.toString());
       return e.toString();
     }
   }

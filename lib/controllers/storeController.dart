@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class TestManager {
+class StoreController {
+  CollectionReference ingredients =
+      FirebaseFirestore.instance.collection('ingredients');
   void getTest() async {
     QuerySnapshot docs =
         await FirebaseFirestore.instance.collection('test').get();

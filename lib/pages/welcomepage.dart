@@ -5,7 +5,6 @@ import 'package:recipe_ventures/pages/signuppage.dart';
 
 class WelcomePage extends StatelessWidget {
   @override
-
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     // This size provides us total height and width of our screen
@@ -21,50 +20,53 @@ class WelcomePage extends StatelessWidget {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Text("Welcome to Recipe Ventures", style: Theme.of(context).textTheme.headline3),
-
+                  Text("Welcome to Recipe Ventures",
+                      style: Theme.of(context).textTheme.headline3),
                   SizedBox(height: 10),
                 ],
               ),
               Container(
                 height: size.height / 3,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/burger.png")
-                  )
-                ),
+                    image: DecorationImage(
+                        image: AssetImage("assets/images/burger.png"))),
               ),
               Column(
                 children: <Widget>[
                   MaterialButton(
                       minWidth: double.infinity,
                       height: 60,
-                      onPressed: (){print("Login Button Pressed");
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));},
+                      onPressed: () {
+                        print("Login Button Pressed");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()));
+                      },
                       shape: RoundedRectangleBorder(
                           side: BorderSide(
-                              width: 2.5,
-                              color: Colors.black,
+                            width: 2.5,
+                            color: Colors.black,
                           ),
-                          borderRadius: BorderRadius.circular(50)
-                      ),
-                      child: Text("Login", style: Theme.of(context).textTheme.button)
-                  ),
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Text("Login",
+                          style: Theme.of(context).textTheme.button)),
                   SizedBox(height: 20),
                   MaterialButton(
-                    minWidth: double.infinity,
-                    height: 60,
-                    onPressed: (){print("Signup Button Pressed");
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));},
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 2.5,
-                        color: Colors.blue
-                      ),
-                      borderRadius: BorderRadius.circular(50)
-                    ),
-                    child: Text("Sign Up", style: Theme.of(context).textTheme.button)
-                  ),
+                      minWidth: double.infinity,
+                      height: 60,
+                      onPressed: () {
+                        print("Signup Button Pressed");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignupPage()));
+                      },
+                      shape: RoundedRectangleBorder(
+                          side: BorderSide(width: 2.5, color: Colors.blue),
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Text("Sign Up",
+                          style: Theme.of(context).textTheme.button)),
                 ],
               )
             ],
