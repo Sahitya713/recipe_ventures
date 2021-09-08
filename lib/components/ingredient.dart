@@ -2,11 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../main.dart';
+
 class Ingredient extends StatefulWidget{
   String ingredientName;
   String chosenQuantity;
+  DateTime  expiryDate;
+  bool checkboxVisibility;
 
-  Ingredient({@required this.ingredientName, @required this.chosenQuantity});
+  Ingredient({@required this.ingredientName, @required this.chosenQuantity, @required this.expiryDate, @required this.checkboxVisibility});
 
   @override
   _IngredientState createState() => _IngredientState();
@@ -16,12 +20,17 @@ class _IngredientState extends State<Ingredient> {
   TextEditingController _nameController;
   bool _visibilityTag = true;
   DateTime selectedDate = DateTime.now();
-  String _expiry = '-';
+  String _expiry = 'Expiring on: ';
+  bool _expiredVisibility = false;
+  bool _expiryDateVisibility = true;
+  bool _checked = false;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
+    WidgetsBinding.instance.addObserver(
+        new LifecycleEventHandler(resumeCallBack: () async => _refreshContent()));
   }
 
   @override
@@ -29,6 +38,42 @@ class _IngredientState extends State<Ingredient> {
     _nameController.dispose();
     super.dispose();
   }
+
+  _setTextColor(DateTime expiryDate) {
+    var now = DateTime.now();
+
+    if (int.parse(expiryDate.day.toString()) - int.parse(now.day.toString()) <= 3) {
+      return Colors.red;
+    }
+    else {
+      return Colors.black87;
+    }
+  }
+
+  _checkExpiry(DateTime expiryDate) {
+    var now = DateTime.now();
+    if (now.isAfter(expiryDate)) {
+      setState(() {
+        _expiryDateVisibility = false;
+        _expiredVisibility = true;
+      });
+    }
+  }
+
+_refreshContent() {
+    setState(() {
+      // Here you can change your widget
+      // each time the app resumed.
+      var now = DateTime.now();
+
+      // check if ingredient has expired and set display string accordingly
+      _checkExpiry(widget.expiryDate);
+      // update text colour of expiring items
+      _setTextColor(widget.expiryDate);
+
+    });
+  }
+
 
   _deleteConfirmation(BuildContext context) {
     return showDialog(
@@ -72,7 +117,9 @@ class _IngredientState extends State<Ingredient> {
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
-        _expiry = DateFormat('yyyy-MM-dd').format(selectedDate);
+        widget.expiryDate = selectedDate;
+        _checkExpiry(widget.expiryDate);
+        _setTextColor(widget.expiryDate);
       });
   }
 
@@ -142,8 +189,32 @@ class _IngredientState extends State<Ingredient> {
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text(widget.ingredientName, style: Theme.of(context).textTheme.bodyText1),
-            Text('Expires on $_expiry', style: Theme.of(context).textTheme.caption),
+            Visibility(
+              child: Checkbox(
+                activeColor: Theme.of(context).primaryColor,
+                value: _checked,
+                onChanged: (value) {
+                  setState(() {
+                    _checked = !_checked;
+                  });
+                }),
+              visible: widget.checkboxVisibility,
+            ),
+            Text(widget.ingredientName, style: TextStyle(fontSize: 12, color: _setTextColor(widget.expiryDate))),
+            Visibility(
+              child: Row(
+                  children: [
+                    Text(_expiry, style: Theme.of(context).textTheme.caption),
+                    Text(DateFormat('yyyy-MM-dd').format(widget.expiryDate), style: TextStyle(fontSize: 12, color: _setTextColor(widget.expiryDate))),
+                  ]
+              ),
+              visible: _expiryDateVisibility,
+            ),
+            Visibility(
+                child: Text("Expired", style: TextStyle(fontSize: 12, color: Colors.red),
+                ),
+                visible: _expiredVisibility,
+            ),
             IconButton(
               icon: Icon(
                 Icons.edit,

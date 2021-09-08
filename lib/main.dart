@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -15,6 +16,24 @@ void main() async {
   await Firebase.initializeApp();
   runApp(ChangeNotifierProvider<ThemeNotifier>(
       create: (_) => new ThemeNotifier(), child: Phoenix(child: MyApp())));
+}
+
+class LifecycleEventHandler extends WidgetsBindingObserver {
+  final AsyncCallback resumeCallBack;
+
+  LifecycleEventHandler({this.resumeCallBack});
+
+  @override
+  Future<Null> didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.resumed:
+        await resumeCallBack();
+        break;
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {

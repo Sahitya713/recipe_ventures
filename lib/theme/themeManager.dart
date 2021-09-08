@@ -53,11 +53,6 @@ class ThemeNotifier with ChangeNotifier {
       overline: TextStyle(
           fontSize: 10.0, fontFamily: 'Roboto', color: Colors.black87),
     ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        primary: Color(0xFF000000),
-      ),
-    ),
   );
 
   ThemeData _themeData;

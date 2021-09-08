@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:recipe_ventures/components/ingredient.dart';
 
+import '../main.dart';
+
 class Store extends StatefulWidget {
   @override
   _StoreState createState() => _StoreState();
@@ -13,6 +15,8 @@ class _StoreState extends State<Store> {
   DateTime selectedDate;
   String _expiry = '-';
   String _chosenQuantity = '1';
+  bool _checkboxVisible = false;
+  String recipeGetter = 'Generate Recipes';
 
   @override
   void initState() {
@@ -136,6 +140,7 @@ class _StoreState extends State<Store> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -144,8 +149,26 @@ class _StoreState extends State<Store> {
       body: // can use a list view builder to iterate and display
       Column(
         children: [
-          Ingredient(ingredientName: 'egg', chosenQuantity: '10'),
-          Ingredient(ingredientName: 'chicken', chosenQuantity: '2',)
+          Ingredient(ingredientName: 'egg', chosenQuantity: '10', expiryDate: DateTime(2021, 9, 10), checkboxVisibility: _checkboxVisible),
+          Ingredient(ingredientName: 'chicken', chosenQuantity: '2',expiryDate: DateTime(2021, 9, 15), checkboxVisibility: _checkboxVisible),
+          Expanded(
+            child: Align(
+              alignment: Alignment(0.05, 0.9),
+              child: OutlinedButton(
+                onPressed: () {
+                  setState(() {
+                    _checkboxVisible = true;
+                    recipeGetter = 'Get Recipes';
+                    // generate recipes based on selected items
+                  });
+                },
+                child: Text(recipeGetter,
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFFFEA54B))),
+              ),
+            ),
+          ),
         ]
       ),
       floatingActionButton: FloatingActionButton(
