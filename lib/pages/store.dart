@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:recipe_ventures/components/ingredient.dart';
 
+import '../main.dart';
+
 class Store extends StatefulWidget {
   @override
   _StoreState createState() => _StoreState();
@@ -13,6 +15,8 @@ class _StoreState extends State<Store> {
   DateTime selectedDate;
   String _expiry = '-';
   String _chosenQuantity = '1';
+  bool _checkboxVisible = false;
+  String recipeGetter = 'Generate Recipes';
 
   @override
   void initState() {
@@ -28,10 +32,11 @@ class _StoreState extends State<Store> {
 
   _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now().add(Duration(hours: 1)),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2101));
+      context: context,
+      initialDate: DateTime.now().add(Duration(hours: 1)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101)
+    );
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
@@ -42,7 +47,7 @@ class _StoreState extends State<Store> {
   _addIngredient(BuildContext context) {
     return showDialog(
         context: context,
-        builder: (context) {
+        builder: (context){
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
@@ -68,8 +73,7 @@ class _StoreState extends State<Store> {
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Text('Expires on $_expiry',
-                              style: Theme.of(context).textTheme.caption),
+                          Text('Expires on $_expiry', style: Theme.of(context).textTheme.caption),
                           IconButton(
                             icon: Icon(
                               Icons.calendar_today,
@@ -77,7 +81,8 @@ class _StoreState extends State<Store> {
                             ),
                             onPressed: () => _selectDate(context),
                           ),
-                        ]),
+                        ]
+                    ),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -99,8 +104,7 @@ class _StoreState extends State<Store> {
                             ].map<DropdownMenuItem<String>>((String qty) {
                               return DropdownMenuItem<String>(
                                 value: qty,
-                                child: Text(qty,
-                                    style: Theme.of(context).textTheme.caption),
+                                child: Text(qty, style: Theme.of(context).textTheme.caption),
                               );
                             }).toList(),
                             onChanged: (String qty) {
@@ -109,8 +113,10 @@ class _StoreState extends State<Store> {
                               });
                             },
                           ),
-                        ]),
-                  ]),
+                        ]
+                    ),
+                  ]
+              ),
               actions: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -134,19 +140,37 @@ class _StoreState extends State<Store> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text('Store', style: Theme.of(context).textTheme.headline6),
       ),
       body: // can use a list view builder to iterate and display
-          Column(children: [
-        Ingredient(ingredientName: 'egg', chosenQuantity: '10'),
-        Ingredient(
-          ingredientName: 'chicken',
-          chosenQuantity: '2',
-        )
-      ]),
+      Column(
+        children: [
+          Ingredient(ingredientName: 'egg', chosenQuantity: '10', expiryDate: DateTime(2021, 9, 10), checkboxVisibility: _checkboxVisible),
+          Ingredient(ingredientName: 'chicken', chosenQuantity: '2',expiryDate: DateTime(2021, 9, 15), checkboxVisibility: _checkboxVisible),
+          Expanded(
+            child: Align(
+              alignment: Alignment(0.05, 0.9),
+              child: OutlinedButton(
+                onPressed: () {
+                  setState(() {
+                    _checkboxVisible = true;
+                    recipeGetter = 'Get Recipes';
+                    // generate recipes based on selected items
+                  });
+                },
+                child: Text(recipeGetter,
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFFFEA54B))),
+              ),
+            ),
+          ),
+        ]
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _addIngredient(context);
@@ -154,6 +178,8 @@ class _StoreState extends State<Store> {
         child: const Icon(Icons.add),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-    );
+      );
+
+
   }
 }

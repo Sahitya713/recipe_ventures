@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_ventures/controllers/authenticationController.dart';
 
 import 'package:recipe_ventures/pages/loginpage.dart';
+
+import 'navBar.dart';
 
 class SignupPage extends StatelessWidget {
   @override
@@ -16,11 +19,11 @@ class SignupPage extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Icons.arrow_back_ios,
+          icon: Icon(
+            Icons.arrow_back_ios,
             size: 20,
-            color: Colors.black,),
-
-
+            color: Colors.black,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -33,13 +36,12 @@ class SignupPage extends StatelessWidget {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Text("Sign up",
-                    style: Theme.of(context).textTheme.headline3),
-                  SizedBox(height: 20,),
+                  Text("Sign up", style: Theme.of(context).textTheme.headline3),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Text("Create an account, It's free ",
-                    style: Theme.of(context).textTheme.subtitle1)
-
-
+                      style: Theme.of(context).textTheme.subtitle1)
                 ],
               ),
               Column(
@@ -55,16 +57,22 @@ class SignupPage extends StatelessWidget {
                 child: MaterialButton(
                   minWidth: double.infinity,
                   height: 60,
-                  onPressed: () {},
+                  onPressed: () async {
+                    dynamic x = await AuthenticationController()
+                        .registerWithEmailAndPassword(
+                            "test", "test@gmail.com", "password");
+                    print(x);
+                    print("sign up");
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Navbar()));
+                  },
                   color: Color(0xff0095FF),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
-
                   ),
-                  child: Text(
-                    "Sign up", style: Theme.of(context).textTheme.button
-                  ),
+                  child: Text("Sign up",
+                      style: Theme.of(context).textTheme.button),
                 ),
               ),
               Row(
@@ -72,9 +80,14 @@ class SignupPage extends StatelessWidget {
                 children: <Widget>[
                   Text("Already have an account?"),
                   TextButton(
-                    child: Text("Log in", style: Theme.of(context).textTheme.button),
-                    onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));}
-                  ),
+                      child: Text("Log in",
+                          style: Theme.of(context).textTheme.button),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()));
+                      }),
                 ],
               )
             ],
@@ -85,21 +98,15 @@ class SignupPage extends StatelessWidget {
   }
 }
 
-
-
 // we will be creating a widget for text field
-Widget inputFile({label, obscureText = false})
-{
+Widget inputFile({label, obscureText = false}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
       Text(
         label,
         style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w400,
-            color:Colors.black87
-        ),
+            fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black87),
       ),
       SizedBox(
         height: 5,
@@ -107,20 +114,16 @@ Widget inputFile({label, obscureText = false})
       TextField(
         obscureText: obscureText,
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 0,
-                horizontal: 10),
+            contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Colors.grey[400]
-              ),
-
+              borderSide: BorderSide(color: Colors.grey[400]),
             ),
             border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey[400])
-            )
-        ),
+                borderSide: BorderSide(color: Colors.grey[400]))),
       ),
-      SizedBox(height: 10,)
+      SizedBox(
+        height: 10,
+      )
     ],
   );
 }

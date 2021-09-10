@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
-import 'package:recipe_ventures/controllers/recipeController.dart';
-import 'package:recipe_ventures/controllers/test.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:recipe_ventures/pages/ingredientConfirmationPage.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -80,14 +79,11 @@ class _HomepageState extends State<Homepage> {
                 child: AspectRatio(
                   aspectRatio: 1 / 1.15,
                   child: image != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Image.file(
-                            image,
-                            width: 100,
-                            height: 400,
-                            fit: BoxFit.cover,
-                          ),
+                      ? Image.file(
+                          image,
+                          width: 100,
+                          height: 400,
+                          fit: BoxFit.cover,
                         )
                       : Container(
                           width: 100,
@@ -116,33 +112,43 @@ class _HomepageState extends State<Homepage> {
               ),
             ),
           ),
-          image!=null?Padding(
-            padding: const EdgeInsets.only(left: 25, right: 25, top: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    print('add to store');
-                  },
-                  child: Text('Add to store'),
-                  style: ElevatedButton.styleFrom(
-                      fixedSize: Size(170, 36),
-                      primary: Theme.of(context).primaryColor),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    print('retake image');
-                  },
-                  child: Text('Retake Image'),
-                  style: ElevatedButton.styleFrom(
-                      fixedSize: Size(170, 36),
-                      primary: Theme.of(context).primaryColor),
+          image != null
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 25, right: 25, top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          // Get list of ingredient
+                          List ingredients = ['apple', 'pear', 'orange', 'Change the widget'];
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    IngredientConfirmationPage(
+                                        ingredients, image)),
+                          );
+                          print('add to store');
+                        },
+                        child: Text('Add to store'),
+                        style: ElevatedButton.styleFrom(
+                            fixedSize: Size(170, 36),
+                            primary: Theme.of(context).primaryColor),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          print('retake image');
+                        },
+                        child: Text('Retake Image'),
+                        style: ElevatedButton.styleFrom(
+                            fixedSize: Size(170, 36),
+                            primary: Theme.of(context).primaryColor),
+                      )
+                    ],
+                  ),
                 )
-              ],
-            ),
-          )
-          : Container()
+              : Container()
           // Center(
           //   // child: Text('upload Image')
           //   child: GestureDetector(
