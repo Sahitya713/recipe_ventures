@@ -13,15 +13,27 @@ class AuthenticationController {
   }
 
   Future signInWithEmailAndPassword(String email, String password) async {
-    try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
+
+      try {UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
 
-      return "success";
-    } catch (error) {
+      if (result.user.uid.isNotEmpty)
+        print('Successful Login. User ID: ' + result.user.uid);
+      return true;}
+
+        catch (error){
+        print(error.toString());
+        print('Login Failed.');
+        return false;
+
+
+        }
+
+
+    /*catch (error) {
       print(error.toString());
       return null;
-    }
+    }*/
   }
 
   Future forgetPassword(String email) async {
@@ -45,9 +57,10 @@ class AuthenticationController {
       // create a new doc for the user with new id
       String createUser =
           await UserController().createUser(displayName, email, user.uid);
-      return createUser;
+      return true;
     } catch (e) {
-      return e.toString();
+      print(e.toString());
+      return false;
     }
   }
 

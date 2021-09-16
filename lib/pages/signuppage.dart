@@ -7,6 +7,12 @@ import 'navBar.dart';
 
 class SignupPage extends StatelessWidget {
   @override
+
+  final myEmailController = TextEditingController();
+  final myPasswordController = TextEditingController();
+  final myUsernameController = TextEditingController();
+  final myConfirmpasswordController = TextEditingController();
+
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -46,10 +52,45 @@ class SignupPage extends StatelessWidget {
               ),
               Column(
                 children: <Widget>[
-                  inputFile(label: "Username"),
-                  inputFile(label: "Email"),
-                  inputFile(label: "Password", obscureText: true),
-                  inputFile(label: "Confirm Password ", obscureText: true),
+                  Text('Username', style: Theme.of(context).textTheme.subtitle1),
+                  SizedBox(height: 5),
+                  TextField(
+                      controller: myUsernameController,
+                      decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
+                          border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
+                      obscureText: false
+                  ),
+
+                  Text('Email Address', style: Theme.of(context).textTheme.subtitle1),
+                  SizedBox(height: 5),
+                  TextField(
+                      controller: myEmailController,
+                      decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
+                          border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
+                      obscureText: false
+                  ),
+
+                  Text('Password', style: Theme.of(context).textTheme.subtitle1),
+                  SizedBox(height: 5),
+                  TextField(
+                      controller: myPasswordController,
+                      decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
+                          border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
+                      obscureText: true
+                  ),
+
+                  Text('Confirm Password', style: Theme.of(context).textTheme.subtitle1),
+                  SizedBox(height: 5),
+                  TextField(
+                      controller: myConfirmpasswordController,
+                      decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
+                          border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
+                      obscureText: true
+                  ),
                 ],
               ),
               Container(
@@ -58,13 +99,21 @@ class SignupPage extends StatelessWidget {
                   minWidth: double.infinity,
                   height: 60,
                   onPressed: () async {
-                    dynamic x = await AuthenticationController()
+                    final signupBoolean = await AuthenticationController()
                         .registerWithEmailAndPassword(
-                            "test", "test@gmail.com", "password");
-                    print(x);
-                    print("sign up");
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Navbar()));
+                            myUsernameController.text.trim(),myEmailController.text.trim(),myPasswordController.text.trim());
+                    print("Sign up pressed");
+                    if (signupBoolean == true){
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Navbar()));
+                    }
+                    else if (signupBoolean == false){
+                      showDialog(context:context,
+                          builder: (BuildContext context)
+                          {return AlertDialog(title: Text("Failed to sign up. Please try again"),
+                              titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                          });
+                    }
                   },
                   color: Color(0xff0095FF),
                   elevation: 0,

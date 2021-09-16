@@ -70,7 +70,7 @@ class _IngredientConfirmationPageState
               },
               child: Text('Confirm'),
               style: ElevatedButton.styleFrom(
-                  fixedSize: Size(170, 36),
+                 // fixedSize: Size(170, 36),
                   primary: Theme.of(context).primaryColor),
             ),
           ),
