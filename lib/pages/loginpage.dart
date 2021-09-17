@@ -19,7 +19,8 @@ class LoginPage extends StatelessWidget {
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+            print ('Back to welcome page');
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -88,18 +89,46 @@ class LoginPage extends StatelessWidget {
                             .signInWithEmailAndPassword(
                             myEmailController.text.trim(),
                             myPasswordController.text.trim());
-                        if (loginBoolean == true) {
+                        if (loginBoolean == 'Pass') {
                           Navigator.push(context,
                               MaterialPageRoute(
                                   builder: (context) => Navbar()));
                         }
-                        else if (loginBoolean == false)
-                          {showDialog(context:context,
+                        else if (loginBoolean == 'WrongPassword') {
+                          showDialog(context:context,
                               builder: (BuildContext context)
-                              {return AlertDialog(title: Text("Failed to log in. Please try again"),
+                              {return AlertDialog(title: Text("Password is incorrect. Please try again."),
                                   titleTextStyle: Theme.of(context).textTheme.subtitle1);
                               });
                           }
+                        else if (loginBoolean == 'InvalidEmail') {
+                          showDialog(context:context,
+                              builder: (BuildContext context)
+                              {return AlertDialog(title: Text("The email address is badly formatted. Please try again"),
+                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                              });
+                        }
+                        else if (loginBoolean == 'Usernotfound') {
+                          showDialog(context:context,
+                              builder: (BuildContext context)
+                              {return AlertDialog(title: Text("Account does not exist. Please try again"),
+                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                              });
+                        }
+                        else if (loginBoolean == 'ExceedAttempts') {
+                          showDialog(context:context,
+                              builder: (BuildContext context)
+                              {return AlertDialog(title: Text("The maximum number of attempts has been exceeded. Please try again later."),
+                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                              });
+                        }
+                        else if (loginBoolean == 'GenericError') {
+                          showDialog(context:context,
+                              builder: (BuildContext context)
+                              {return AlertDialog(title: Text("The email/password entered is invalid. Please try again."),
+                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                              });
+                        }
                       },
                       color: Color(0xff0095FF),
                       elevation: 0,
@@ -119,10 +148,8 @@ class LoginPage extends StatelessWidget {
                         child: Text("Sign Up",
                             style: Theme.of(context).textTheme.button),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignupPage()));
+                          Navigator.pushNamedAndRemoveUntil(context, '/Signup', (_) => false);
+                          print ('Login -> Signup Pressed');
                         }),
                   ],
                 ),

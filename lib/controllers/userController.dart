@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:recipe_ventures/controllers/authenticationController.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserController {
   final String uid;
@@ -7,19 +8,35 @@ class UserController {
   UserController({this.uid});
 
   CollectionReference users = FirebaseFirestore.instance.collection('users');
+
   AuthenticationController authController = AuthenticationController();
 
-  Future<String> createUser(
+  Future<dynamic> createUser(
       String displayName, String email, String uid) async {
     try {
       Map<String, dynamic> data = {};
       data['displayName'] = displayName;
       data['email'] = email;
+      data['uid'] = uid;
       await users.doc(uid).set(data);
-      return "success";
+      print('Successfully added user');
+      return;
     } catch (e) {
+      print('Error in adding user');
       print(e.toString());
       return null;
     }
   }
+
+  /*Future printDocumentRef(String uid, String email) async {
+    QuerySnapshot querySnapshot = await users.get();
+    dynamic allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    for (var i=0; i<allData.length; i++)
+    {
+      if (allData[i]['email'] == email) {
+        print('Login User Information: ');
+        print(allData[i]);
+      }
+    }
+  }*/
 }

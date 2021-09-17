@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_ventures/controllers/authenticationController.dart';
+import 'package:recipe_ventures/controllers/userController.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:recipe_ventures/pages/loginpage.dart';
 
@@ -23,7 +25,8 @@ class SignupPage extends StatelessWidget {
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+            print('Back to welcome page');
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -99,19 +102,73 @@ class SignupPage extends StatelessWidget {
                   minWidth: double.infinity,
                   height: 60,
                   onPressed: () async {
-                    final signupBoolean = await AuthenticationController()
-                        .registerWithEmailAndPassword(
-                            myUsernameController.text.trim(),myEmailController.text.trim(),myPasswordController.text.trim());
                     print("Sign up pressed");
-                    if (signupBoolean == true){
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Navbar()));
+                    bool samePassword = await AuthenticationController().checkSamePassword(
+                        myPasswordController.text.trim(),
+                        myConfirmpasswordController.text.trim());
+                    if (samePassword == true) {
+                      final signupCode = await AuthenticationController().registerWithEmailAndPassword(
+                          myUsernameController.text.trim(),
+                          myEmailController.text.trim(),
+                          myPasswordController.text.trim());
+                      if (signupCode == 'Pass') {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Navbar()));
+                      }
+                      else if (signupCode == 'WeakPassword') {
+                        showDialog(context: context, builder: (
+                            BuildContext context) {
+                          return AlertDialog(title: Text(
+                              "Password is too weak. Minimum 6 characters required."),
+                              titleTextStyle: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .subtitle1);
+                        });
+                      }
+                      else if (signupCode == 'ExistingAccount') {
+                        showDialog(context: context, builder: (
+                            BuildContext context) {
+                          return AlertDialog(title: Text(
+                              "Account with email already exists. Please log in."),
+                              titleTextStyle: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .subtitle1);
+                        });
+                      }
+                      else if (signupCode == 'InvalidEmail') {
+                        showDialog(context: context, builder: (
+                            BuildContext context) {
+                          return AlertDialog(title: Text(
+                              "The email address is badly formatted. Please try again with proper email address."),
+                              titleTextStyle: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .subtitle1);
+                        });
+                      }
+                      else if (signupCode == 'GenericError') {
+                        showDialog(context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(title: Text(
+                                  "Failed to sign up. Please try again with proper input."),
+                                  titleTextStyle: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .subtitle1);
+                            });
+                      }
                     }
-                    else if (signupBoolean == false){
-                      showDialog(context:context,
-                          builder: (BuildContext context)
-                          {return AlertDialog(title: Text("Failed to sign up. Please try again"),
-                              titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                    else if (samePassword == false){
+                      showDialog(context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(title: Text(
+                                "Password confirmation does not match."),
+                                titleTextStyle: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .subtitle1);
                           });
                     }
                   },
@@ -132,10 +189,8 @@ class SignupPage extends StatelessWidget {
                       child: Text("Log in",
                           style: Theme.of(context).textTheme.button),
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()));
+                        Navigator.pushNamedAndRemoveUntil(context, '/Login',(_) => false);
+                        print('Signup -> Login Pressed');
                       }),
                 ],
               )

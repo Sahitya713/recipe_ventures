@@ -8,6 +8,8 @@ import 'package:recipe_ventures/utils/constants.dart';
 import 'package:recipe_ventures/theme/themeManager.dart';
 import 'package:provider/provider.dart';
 import 'package:recipe_ventures/pages/welcomepage.dart';
+import 'package:recipe_ventures/pages/loginpage.dart';
+import 'package:recipe_ventures/pages/signuppage.dart';
 
 import 'data/appUser.dart';
 
@@ -47,7 +49,12 @@ class MyApp extends StatelessWidget {
         child: Consumer<ThemeNotifier>(
           builder: (context, theme, _) => MaterialApp(
             theme: theme.getTheme(),
-            home: WelcomePage(),
+            initialRoute: '/',
+            routes:{
+            '/':(context) => WelcomePage(),
+            '/Login':(context) => LoginPage(),
+            '/Signup':(context) => SignupPage(),}
+        ,
             // MainPage(),
           ),
         ));
