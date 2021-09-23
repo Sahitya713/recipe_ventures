@@ -10,8 +10,16 @@ class Ingredient extends StatefulWidget{
   String chosenUnit;
   DateTime expiryDate;
   bool checkboxVisibility;
+  bool selectAll;
 
-  Ingredient({@required this.ingredientName, @required this.chosenQuantity, @required this.chosenUnit,@required this.expiryDate, @required this.checkboxVisibility});
+  Ingredient({
+    @required this.ingredientName,
+    @required this.chosenQuantity,
+    @required this.chosenUnit,
+    @required this.expiryDate,
+    @required this.checkboxVisibility,
+    @required this.selectAll,
+  });
 
   @override
   _IngredientState createState() => _IngredientState();
@@ -244,10 +252,17 @@ class _IngredientState extends State<Ingredient> {
               Visibility(
                 child: Checkbox(
                     activeColor: Theme.of(context).primaryColor,
-                    value: _checked,
+                    value: widget.selectAll ? widget.selectAll : _checked,
                     onChanged: (value) {
                       setState(() {
-                        _checked = !_checked;
+                        if (widget.selectAll) {
+                          _checked = widget.selectAll;
+                          widget.selectAll = !widget.selectAll;
+                          _checked = !_checked;
+                        }
+                        else {
+                          _checked = !_checked;
+                        }
                       });
                     }),
                 visible: widget.checkboxVisibility,

@@ -13,13 +13,12 @@ class Store extends StatefulWidget {
 class _StoreState extends State<Store> {
   TextEditingController _nameController;
   TextEditingController _quantityController;
-  String _ingredientName;
   DateTime selectedDate;
   String _expiry = '-';
-  String _chosenQuantity = '1';
   String _chosenUnit = 'units';
   bool _checkboxVisible = false;
   String recipeGetter = 'Generate Recipes';
+  bool _selectAll = false;
 
   @override
   void initState() {
@@ -144,7 +143,6 @@ class _StoreState extends State<Store> {
                           _nameController.clear();
                           _quantityController.clear();
                           _expiry = '-';
-                          _chosenQuantity = '1';
                           _chosenUnit = 'units';
                           Navigator.pop(context);
                         }),
@@ -161,14 +159,62 @@ class _StoreState extends State<Store> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: Visibility(
+          child: IconButton(
+            icon: Icon(
+              Icons.select_all,
+              color: Theme.of(context).accentColor,
+            ),
+            onPressed: () {
+              setState(() {
+                _selectAll = !_selectAll;
+              });
+            },
+          ),
+          visible: _checkboxVisible,
+        ),
         centerTitle: true,
         title: Text('Store', style: Theme.of(context).textTheme.headline6),
+        actions: [
+          Visibility(
+              child: MaterialButton(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Cancel',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _checkboxVisible = false;
+                    recipeGetter = 'Generate Recipes';
+                  });
+                },
+              ),
+            visible: _checkboxVisible,
+          ),
+        ]
       ),
       body: // can use a list view builder to iterate and display
       Column(
         children: [
-          Ingredient(ingredientName: 'egg', chosenQuantity: '2', chosenUnit: 'units', expiryDate: DateTime(2021, 9, 22), checkboxVisibility: _checkboxVisible),
-          Ingredient(ingredientName: 'chicken', chosenQuantity: '2', chosenUnit: 'units', expiryDate: DateTime(2021, 9, 21), checkboxVisibility: _checkboxVisible),
+          Ingredient(
+            ingredientName: 'egg',
+            chosenQuantity: '2',
+            chosenUnit: 'units',
+            expiryDate: DateTime(2021, 9, 22),
+            checkboxVisibility: _checkboxVisible,
+            selectAll: _selectAll,
+          ),
+          Ingredient(
+            ingredientName: 'chicken',
+            chosenQuantity: '2',
+            chosenUnit: 'units',
+            expiryDate: DateTime(2021, 9, 28),
+            checkboxVisibility: _checkboxVisible,
+            selectAll: _selectAll,
+          ),
           Expanded(
             child: Align(
               alignment: FractionalOffset.bottomCenter,
