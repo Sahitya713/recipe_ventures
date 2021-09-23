@@ -8,7 +8,7 @@ class Ingredient extends StatefulWidget{
   String ingredientName;
   String chosenQuantity;
   String chosenUnit;
-  DateTime  expiryDate;
+  DateTime expiryDate;
   bool checkboxVisibility;
 
   Ingredient({@required this.ingredientName, @required this.chosenQuantity, @required this.chosenUnit,@required this.expiryDate, @required this.checkboxVisibility});
@@ -23,6 +23,7 @@ class _IngredientState extends State<Ingredient> {
   bool _visibilityTag = true;
   DateTime selectedDate = DateTime.now();
   String _expiry = 'Expiring on: ';
+  DateTime _alertExpiry;
   bool _expiredVisibility = false;
   bool _expiryDateVisibility = true;
   bool _checked = false;
@@ -32,8 +33,9 @@ class _IngredientState extends State<Ingredient> {
     super.initState();
     _nameController = TextEditingController();
     _quantityController = TextEditingController();
-    WidgetsBinding.instance.addObserver(
-        new LifecycleEventHandler(resumeCallBack: () async => _refreshContent()));
+    _alertExpiry = widget.expiryDate;
+    _checkExpiry(widget.expiryDate);
+    _setTextColor(widget.expiryDate);
   }
 
   @override
@@ -62,22 +64,13 @@ class _IngredientState extends State<Ingredient> {
         _expiredVisibility = true;
       });
     }
+    else {
+      setState(() {
+        _expiryDateVisibility = true;
+        _expiredVisibility = false;
+      });
+    }
   }
-
-_refreshContent() {
-    setState(() {
-      // Here you can change your widget
-      // each time the app resumed.
-      var now = DateTime.now();
-
-      // check if ingredient has expired and set display string accordingly
-      _checkExpiry(widget.expiryDate);
-      // update text colour of expiring items
-      _setTextColor(widget.expiryDate);
-
-    });
-  }
-
 
   _deleteConfirmation(BuildContext context) {
     return showDialog(
@@ -118,13 +111,16 @@ _refreshContent() {
       firstDate: DateTime(2000),
       lastDate: DateTime(2025),
     );
-    if (picked != null && picked != selectedDate)
+    if (picked != null && picked != selectedDate) {
       setState(() {
-        selectedDate = picked;
-        widget.expiryDate = selectedDate;
-        _checkExpiry(widget.expiryDate);
-        _setTextColor(widget.expiryDate);
+      selectedDate = picked;
+      _alertExpiry = selectedDate;
+      _checkExpiry(_alertExpiry);
+      _setTextColor(_alertExpiry);
+      print(_alertExpiry);
       });
+    }
+
   }
 
   _editNameAndExpiry(BuildContext context) {
@@ -200,7 +196,7 @@ _refreshContent() {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text('$_expiry', style: Theme.of(context).textTheme.caption),
-                            Text(DateFormat('yyyy-MM-dd').format(widget.expiryDate), style: TextStyle(fontSize: 12, color: _setTextColor(widget.expiryDate))),
+                            Text(DateFormat('yyyy-MM-dd').format(_alertExpiry), style: TextStyle(fontSize: 12, color: _setTextColor(_alertExpiry))),
                             IconButton(
                               icon: Icon(
                                 Icons.calendar_today,
@@ -223,6 +219,11 @@ _refreshContent() {
                           // save new ingredient name & expiry date to db
                           _nameController.clear();
                           _quantityController.clear();
+                          setState(() {
+                            widget.expiryDate = _alertExpiry;
+                            _checkExpiry(widget.expiryDate);
+                            _setTextColor(widget.expiryDate);
+                          });
                           Navigator.pop(context);
                         }),
                   ],

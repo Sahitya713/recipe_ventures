@@ -167,8 +167,8 @@ class _StoreState extends State<Store> {
       body: // can use a list view builder to iterate and display
       Column(
         children: [
-          Ingredient(ingredientName: 'egg', chosenQuantity: '2', chosenUnit: 'units', expiryDate: DateTime(2021, 9, 28), checkboxVisibility: _checkboxVisible),
-          Ingredient(ingredientName: 'rgegherghergergeee', chosenQuantity: '2', chosenUnit: 'units', expiryDate: DateTime(2021, 9, 29), checkboxVisibility: _checkboxVisible),
+          Ingredient(ingredientName: 'egg', chosenQuantity: '2', chosenUnit: 'units', expiryDate: DateTime(2021, 9, 22), checkboxVisibility: _checkboxVisible),
+          Ingredient(ingredientName: 'chicken', chosenQuantity: '2', chosenUnit: 'units', expiryDate: DateTime(2021, 9, 21), checkboxVisibility: _checkboxVisible),
           Expanded(
             child: Align(
               alignment: FractionalOffset.bottomCenter,
