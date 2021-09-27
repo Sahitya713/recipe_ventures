@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_ventures/controllers/authenticationController.dart';
 import 'package:recipe_ventures/pages/favourites.dart';
 import 'package:recipe_ventures/pages/homepage.dart';
 import 'package:recipe_ventures/pages/store.dart';
 import 'package:recipe_ventures/utils/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Navbar extends StatefulWidget {
   @override
@@ -23,6 +25,8 @@ class _NavbarState extends State<Navbar> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserID = AuthenticationController().getCurrUserFromFirestore();
+    print(currentUserID);
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(

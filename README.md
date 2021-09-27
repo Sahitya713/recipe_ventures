@@ -1,16 +1,16 @@
 # recipe_ventures
 
-A new Flutter application.
+A pantry management application that can help you reduce the number of times you have to throw away precious ingredients from your fridge or pantry.
 
-## Getting Started
+### Main Features
 
-This project is a starting point for a Flutter application.
+1. The application includes an image recognision model to recognise ingredients in a picture
+2. Users can manage a "store" that keeps track of their ingredients, their quantity and expiry dates
+3. Users can generate recipes based on the ingredients in their store and favourite recipes
 
-A few resources to get you started if this is your first Flutter project:
+### Technical Details
+- The mobile applciation is developed using Flutter.
+- The app uses spoonacular food API (https://spoonacular.com/food-api/docs) to generate recipes
+- Firebase is used for authentication and data storage.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

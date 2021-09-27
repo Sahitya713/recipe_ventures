@@ -133,7 +133,7 @@ class _HomepageState extends State<Homepage> {
                         },
                         child: Text('Add to store'),
                         style: ElevatedButton.styleFrom(
-                            fixedSize: Size(170, 36),
+                            //fixedSize: Size(170, 36),
                             primary: Theme.of(context).primaryColor),
                       ),
                       ElevatedButton(
@@ -142,7 +142,7 @@ class _HomepageState extends State<Homepage> {
                         },
                         child: Text('Retake Image'),
                         style: ElevatedButton.styleFrom(
-                            fixedSize: Size(170, 36),
+                            //fixedSize: Size(170, 36),
                             primary: Theme.of(context).primaryColor),
                       )
                     ],

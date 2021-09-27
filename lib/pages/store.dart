@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:recipe_ventures/components/ingredient.dart';
+import 'package:recipe_ventures/pages/recipeslist.dart';
 
 import '../main.dart';
 
@@ -11,22 +12,25 @@ class Store extends StatefulWidget {
 
 class _StoreState extends State<Store> {
   TextEditingController _nameController;
-  String _ingredientName;
+  TextEditingController _quantityController;
   DateTime selectedDate;
   String _expiry = '-';
-  String _chosenQuantity = '1';
+  String _chosenUnit = 'units';
   bool _checkboxVisible = false;
   String recipeGetter = 'Generate Recipes';
+  bool _selectAll = false;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
+    _quantityController = TextEditingController();
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _quantityController.dispose();
     super.dispose();
   }
 
@@ -51,71 +55,82 @@ class _StoreState extends State<Store> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("Please input ingredient name:",
-                        style: Theme.of(context).textTheme.bodyText2),
-                    TextField(
-                      onChanged: (newName) {
-                        // setState(() {
-                        //   _ingredientName = newName;
-                        // });
-                      },
-                      controller: _nameController,
-                    ),
-                    Divider(
-                      height: 20,
-                    ),
-                    Text("Please input expiry date of item:",
-                        style: Theme.of(context).textTheme.bodyText2),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text('Expires on $_expiry', style: Theme.of(context).textTheme.caption),
-                          IconButton(
-                            icon: Icon(
-                              Icons.calendar_today,
-                              color: Theme.of(context).accentColor,
+              content: SingleChildScrollView(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Please input ingredient name:",
+                          style: Theme.of(context).textTheme.bodyText2),
+                      TextField(
+                        onChanged: (newName) {
+                          // setState(() {
+                          //   _ingredientName = newName;
+                          // });
+                        },
+                        controller: _nameController,
+                      ),
+                      Divider(
+                        height: 20,
+                      ),
+                      Text("Please input expiry date of item:",
+                          style: Theme.of(context).textTheme.bodyText2),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text('Expires on $_expiry', style: Theme.of(context).textTheme.caption),
+                            IconButton(
+                              icon: Icon(
+                                Icons.calendar_today,
+                                color: Theme.of(context).accentColor,
+                              ),
+                              onPressed: () => _selectDate(context),
                             ),
-                            onPressed: () => _selectDate(context),
-                          ),
-                        ]
-                    ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text("Please input quantity of item:",
-                              style: Theme.of(context).textTheme.bodyText2),
-                          DropdownButton<String>(
-                            value: _chosenQuantity,
-                            items: <String>[
-                              '1',
-                              '2',
-                              '3',
-                              '4',
-                              '5',
-                              '6',
-                              '7',
-                              '8',
-                              '9',
-                              '10',
-                            ].map<DropdownMenuItem<String>>((String qty) {
-                              return DropdownMenuItem<String>(
-                                value: qty,
-                                child: Text(qty, style: Theme.of(context).textTheme.caption),
-                              );
-                            }).toList(),
-                            onChanged: (String qty) {
-                              setState(() {
-                                _chosenQuantity = qty;
-                              });
-                            },
-                          ),
-                        ]
-                    ),
-                  ]
+                          ]
+                      ),
+                      Text("Please input quantity of ingredient:",
+                          style: Theme.of(context).textTheme.bodyText2),
+                      TextField(
+                        keyboardType: TextInputType.number,
+                        onChanged: (newName) {
+                          // setState(() {
+                          //   _ingredientName = newName;
+                          // });
+                        },
+                        controller: _quantityController,
+                      ),
+                      Divider(
+                        height: 20,
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text("Please input unit of item:",
+                                style: Theme.of(context).textTheme.bodyText2),
+                            DropdownButton<String>(
+                              value: _chosenUnit,
+                              items: <String>[
+                                'g',
+                                'kg',
+                                'ml',
+                                'l',
+                                'units',
+                              ].map<DropdownMenuItem<String>>((String qty) {
+                                return DropdownMenuItem<String>(
+                                  value: qty,
+                                  child: Text(qty, style: Theme.of(context).textTheme.caption),
+                                );
+                              }).toList(),
+                              onChanged: (String unit) {
+                                setState(() {
+                                  _chosenUnit = unit;
+                                });
+                              },
+                            ),
+                          ]
+                      ),
+                    ]
+                ),
               ),
               actions: [
                 Row(
@@ -126,8 +141,9 @@ class _StoreState extends State<Store> {
                         onPressed: () {
                           // save ingredient details to db & refresh the store page
                           _nameController.clear();
+                          _quantityController.clear();
                           _expiry = '-';
-                          _chosenQuantity = '1';
+                          _chosenUnit = 'units';
                           Navigator.pop(context);
                         }),
                   ],
@@ -143,23 +159,73 @@ class _StoreState extends State<Store> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: Visibility(
+          child: IconButton(
+            icon: Icon(
+              Icons.select_all,
+              color: Theme.of(context).accentColor,
+            ),
+            onPressed: () {
+              setState(() {
+                _selectAll = !_selectAll;
+              });
+            },
+          ),
+          visible: _checkboxVisible,
+        ),
         centerTitle: true,
         title: Text('Store', style: Theme.of(context).textTheme.headline6),
+        actions: [
+          Visibility(
+              child: MaterialButton(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Cancel',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _checkboxVisible = false;
+                    recipeGetter = 'Generate Recipes';
+                  });
+                },
+              ),
+            visible: _checkboxVisible,
+          ),
+        ]
       ),
       body: // can use a list view builder to iterate and display
       Column(
         children: [
-          Ingredient(ingredientName: 'egg', chosenQuantity: '10', expiryDate: DateTime(2021, 9, 10), checkboxVisibility: _checkboxVisible),
-          Ingredient(ingredientName: 'chicken', chosenQuantity: '2',expiryDate: DateTime(2021, 9, 15), checkboxVisibility: _checkboxVisible),
+          Ingredient(
+            ingredientName: 'egg',
+            chosenQuantity: '2',
+            chosenUnit: 'units',
+            expiryDate: DateTime(2021, 9, 22),
+            checkboxVisibility: _checkboxVisible,
+            selectAll: _selectAll,
+          ),
+          Ingredient(
+            ingredientName: 'chicken',
+            chosenQuantity: '2',
+            chosenUnit: 'units',
+            expiryDate: DateTime(2021, 9, 28),
+            checkboxVisibility: _checkboxVisible,
+            selectAll: _selectAll,
+          ),
           Expanded(
             child: Align(
-              alignment: Alignment(0.05, 0.9),
+              alignment: FractionalOffset.bottomCenter,
               child: OutlinedButton(
                 onPressed: () {
                   setState(() {
+                    if (recipeGetter != 'Generate Recipes') {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => RecipeList()));
+                    }
                     _checkboxVisible = true;
                     recipeGetter = 'Get Recipes';
-                    // generate recipes based on selected items
                   });
                 },
                 child: Text(recipeGetter,
@@ -169,7 +235,7 @@ class _StoreState extends State<Store> {
               ),
             ),
           ),
-        ]
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

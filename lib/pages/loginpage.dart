@@ -5,6 +5,10 @@ import 'package:recipe_ventures/pages/navBar.dart';
 
 class LoginPage extends StatelessWidget {
   @override
+
+  final myEmailController = TextEditingController();
+  final myPasswordController = TextEditingController();
+
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -15,7 +19,8 @@ class LoginPage extends StatelessWidget {
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+            print ('Back to welcome page');
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -48,8 +53,26 @@ class LoginPage extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 40),
                   child: Column(
                     children: <Widget>[
-                      inputFile(label: "Email"),
-                      inputFile(label: "Password", obscureText: true)
+                      Text('Email Address', style: Theme.of(context).textTheme.subtitle1),
+                      SizedBox(height: 5),
+                      TextField(
+                        controller: myEmailController,
+                        decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
+                            border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
+                        obscureText: false
+                      ),
+
+                      Text('Password', style: Theme.of(context).textTheme.subtitle1),
+                      SizedBox(height: 5),
+                      TextField(
+                          controller: myPasswordController,
+                          decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
+                              border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
+                          obscureText: true
+                      ),
+
                     ],
                   ),
                 ),
@@ -61,12 +84,51 @@ class LoginPage extends StatelessWidget {
                       minWidth: double.infinity,
                       height: 60,
                       onPressed: () async {
-                        print("login pressed");
-                        await AuthenticationController()
+                        print("Login pressed");
+                        final loginBoolean = await AuthenticationController()
                             .signInWithEmailAndPassword(
-                                "bairisahitya7@gmail.com", "password");
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Navbar()));
+                            myEmailController.text.trim(),
+                            myPasswordController.text.trim());
+                        if (loginBoolean == 'Pass') {
+                          Navigator.push(context,
+                              MaterialPageRoute(
+                                  builder: (context) => Navbar()));
+                        }
+                        else if (loginBoolean == 'WrongPassword') {
+                          showDialog(context:context,
+                              builder: (BuildContext context)
+                              {return AlertDialog(title: Text("Password is incorrect. Please try again."),
+                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                              });
+                          }
+                        else if (loginBoolean == 'InvalidEmail') {
+                          showDialog(context:context,
+                              builder: (BuildContext context)
+                              {return AlertDialog(title: Text("The email address is badly formatted. Please try again"),
+                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                              });
+                        }
+                        else if (loginBoolean == 'Usernotfound') {
+                          showDialog(context:context,
+                              builder: (BuildContext context)
+                              {return AlertDialog(title: Text("Account does not exist. Please try again"),
+                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                              });
+                        }
+                        else if (loginBoolean == 'ExceedAttempts') {
+                          showDialog(context:context,
+                              builder: (BuildContext context)
+                              {return AlertDialog(title: Text("The maximum number of attempts has been exceeded. Please try again later."),
+                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                              });
+                        }
+                        else if (loginBoolean == 'GenericError') {
+                          showDialog(context:context,
+                              builder: (BuildContext context)
+                              {return AlertDialog(title: Text("The email/password entered is invalid. Please try again."),
+                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                              });
+                        }
                       },
                       color: Color(0xff0095FF),
                       elevation: 0,
@@ -86,10 +148,8 @@ class LoginPage extends StatelessWidget {
                         child: Text("Sign Up",
                             style: Theme.of(context).textTheme.button),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignupPage()));
+                          Navigator.pushNamedAndRemoveUntil(context, '/Signup', (_) => false);
+                          print ('Login -> Signup Pressed');
                         }),
                   ],
                 ),
@@ -116,6 +176,8 @@ class LoginPage extends StatelessWidget {
 
 // we will be creating a widget for text field
 Widget inputFile({label, obscureText = false}) {
+  final myController = TextEditingController();
+
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -128,14 +190,11 @@ Widget inputFile({label, obscureText = false}) {
         height: 5,
       ),
       TextField(
+        controller: myController,
         obscureText: obscureText,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey[400]),
-            ),
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey[400]))),
+        decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
+            border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
       ),
       SizedBox(
         height: 10,

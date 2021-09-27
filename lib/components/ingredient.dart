@@ -7,10 +7,19 @@ import '../main.dart';
 class Ingredient extends StatefulWidget{
   String ingredientName;
   String chosenQuantity;
-  DateTime  expiryDate;
+  String chosenUnit;
+  DateTime expiryDate;
   bool checkboxVisibility;
+  bool selectAll;
 
-  Ingredient({@required this.ingredientName, @required this.chosenQuantity, @required this.expiryDate, @required this.checkboxVisibility});
+  Ingredient({
+    @required this.ingredientName,
+    @required this.chosenQuantity,
+    @required this.chosenUnit,
+    @required this.expiryDate,
+    @required this.checkboxVisibility,
+    @required this.selectAll,
+  });
 
   @override
   _IngredientState createState() => _IngredientState();
@@ -18,9 +27,11 @@ class Ingredient extends StatefulWidget{
 
 class _IngredientState extends State<Ingredient> {
   TextEditingController _nameController;
+  TextEditingController _quantityController;
   bool _visibilityTag = true;
   DateTime selectedDate = DateTime.now();
   String _expiry = 'Expiring on: ';
+  DateTime _alertExpiry;
   bool _expiredVisibility = false;
   bool _expiryDateVisibility = true;
   bool _checked = false;
@@ -29,13 +40,16 @@ class _IngredientState extends State<Ingredient> {
   void initState() {
     super.initState();
     _nameController = TextEditingController();
-    WidgetsBinding.instance.addObserver(
-        new LifecycleEventHandler(resumeCallBack: () async => _refreshContent()));
+    _quantityController = TextEditingController();
+    _alertExpiry = widget.expiryDate;
+    _checkExpiry(widget.expiryDate);
+    _setTextColor(widget.expiryDate);
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _quantityController.dispose();
     super.dispose();
   }
 
@@ -58,22 +72,13 @@ class _IngredientState extends State<Ingredient> {
         _expiredVisibility = true;
       });
     }
+    else {
+      setState(() {
+        _expiryDateVisibility = true;
+        _expiredVisibility = false;
+      });
+    }
   }
-
-_refreshContent() {
-    setState(() {
-      // Here you can change your widget
-      // each time the app resumed.
-      var now = DateTime.now();
-
-      // check if ingredient has expired and set display string accordingly
-      _checkExpiry(widget.expiryDate);
-      // update text colour of expiring items
-      _setTextColor(widget.expiryDate);
-
-    });
-  }
-
 
   _deleteConfirmation(BuildContext context) {
     return showDialog(
@@ -114,13 +119,16 @@ _refreshContent() {
       firstDate: DateTime(2000),
       lastDate: DateTime(2025),
     );
-    if (picked != null && picked != selectedDate)
+    if (picked != null && picked != selectedDate) {
       setState(() {
-        selectedDate = picked;
-        widget.expiryDate = selectedDate;
-        _checkExpiry(widget.expiryDate);
-        _setTextColor(widget.expiryDate);
+      selectedDate = picked;
+      _alertExpiry = selectedDate;
+      _checkExpiry(_alertExpiry);
+      _setTextColor(_alertExpiry);
+      print(_alertExpiry);
       });
+    }
+
   }
 
   _editNameAndExpiry(BuildContext context) {
@@ -130,39 +138,84 @@ _refreshContent() {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("Please input ingredient name:",
-                        style: Theme.of(context).textTheme.bodyText2),
-                    TextField(
-                      onChanged: (newName) {
-                        setState(() {
-                          widget.ingredientName = newName;
-                        });
-                      },
-                      controller: _nameController,
-                    ),
-                    Divider(
-                      height: 20,
-                    ),
-                    Text("Please input expiry date of item:",
-                        style: Theme.of(context).textTheme.bodyText2),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text('Expires on $_expiry', style: Theme.of(context).textTheme.caption),
-                          IconButton(
-                            icon: Icon(
-                              Icons.calendar_today,
-                              color: Theme.of(context).accentColor,
+              content: SingleChildScrollView(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Please input ingredient name:",
+                          style: Theme.of(context).textTheme.bodyText2),
+                      TextField(
+                        onChanged: (newName) {
+                          setState(() {
+                            widget.ingredientName = newName;
+                          });
+                        },
+                        controller: _nameController,
+                      ),
+                      Divider(
+                        height: 20,
+                      ),
+                      Text("Please input quantity:",
+                          style: Theme.of(context).textTheme.bodyText2),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Flexible(
+                              child: TextField(
+                              keyboardType: TextInputType.number,
+                                onChanged: (newQuantity) {
+                                  setState(() {
+                                    widget.chosenQuantity = newQuantity;
+                                  });
+                                },
+                                controller: _quantityController,
+                              ),
                             ),
-                            onPressed: () => _selectDate(context),
-                          ),
-                        ]
-                    ),
-                  ]
+                            DropdownButton<String>(
+                              value: widget.chosenUnit,
+                              items: <String>[
+                                'g',
+                                'kg',
+                                'ml',
+                                'l',
+                                'units'
+                              ].map<DropdownMenuItem<String>>((String qty) {
+                                return DropdownMenuItem<String>(
+                                  value: qty,
+                                  child: Text(qty, style: Theme.of(context).textTheme.caption),
+                                );
+                              }).toList(),
+                              onChanged: (String unit) {
+                                setState(() {
+                                  widget.chosenUnit = unit;
+                                  // save to db
+                                });
+                              },
+                            ),
+                          ]
+                      ),
+                      Divider(
+                        height: 20,
+                      ),
+                      Text("Please input expiry date of item:",
+                          style: Theme.of(context).textTheme.bodyText2),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text('$_expiry', style: Theme.of(context).textTheme.caption),
+                            Text(DateFormat('yyyy-MM-dd').format(_alertExpiry), style: TextStyle(fontSize: 12, color: _setTextColor(_alertExpiry))),
+                            IconButton(
+                              icon: Icon(
+                                Icons.calendar_today,
+                                color: Theme.of(context).accentColor,
+                              ),
+                              onPressed: () => _selectDate(context),
+                            ),
+                          ]
+                      ),
+                    ]
+                ),
               ),
               actions: [
                 Row(
@@ -173,6 +226,12 @@ _refreshContent() {
                         onPressed: () {
                           // save new ingredient name & expiry date to db
                           _nameController.clear();
+                          _quantityController.clear();
+                          setState(() {
+                            widget.expiryDate = _alertExpiry;
+                            _checkExpiry(widget.expiryDate);
+                            _setTextColor(widget.expiryDate);
+                          });
                           Navigator.pop(context);
                         }),
                   ],
@@ -186,81 +245,87 @@ _refreshContent() {
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Visibility(
-              child: Checkbox(
-                activeColor: Theme.of(context).primaryColor,
-                value: _checked,
-                onChanged: (value) {
-                  setState(() {
-                    _checked = !_checked;
-                  });
-                }),
-              visible: widget.checkboxVisibility,
-            ),
-            Text(widget.ingredientName, style: TextStyle(fontSize: 12, color: _setTextColor(widget.expiryDate))),
-            Visibility(
-              child: Row(
-                  children: [
-                    Text(_expiry, style: Theme.of(context).textTheme.caption),
-                    Text(DateFormat('yyyy-MM-dd').format(widget.expiryDate), style: TextStyle(fontSize: 12, color: _setTextColor(widget.expiryDate))),
-                  ]
+      child: Flexible(
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Visibility(
+                child: Checkbox(
+                    activeColor: Theme.of(context).primaryColor,
+                    value: widget.selectAll ? widget.selectAll : _checked,
+                    onChanged: (value) {
+                      setState(() {
+                        if (widget.selectAll) {
+                          _checked = widget.selectAll;
+                          widget.selectAll = !widget.selectAll;
+                          _checked = !_checked;
+                        }
+                        else {
+                          _checked = !_checked;
+                        }
+                      });
+                    }),
+                visible: widget.checkboxVisibility,
               ),
-              visible: _expiryDateVisibility,
-            ),
-            Visibility(
-                child: Text("Expired", style: TextStyle(fontSize: 12, color: Colors.red),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.5,
+                height: MediaQuery.of(context).size.width * 0.15,
+                padding: EdgeInsets.all(10),
+                child: Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Text(widget.ingredientName, style: TextStyle(fontSize: 18, color: _setTextColor(widget.expiryDate))),
+                      ),
+                      Padding(padding: EdgeInsets.all(2)),
+                      Visibility(
+                          child: Row(
+                              children: [
+                                Flexible(
+                                    child: Text(_expiry, style: Theme.of(context).textTheme.caption),
+                                ),
+                                Flexible(
+                                  child: Text(DateFormat('yyyy-MM-dd').format(widget.expiryDate), style: TextStyle(fontSize: 12, color: _setTextColor(widget.expiryDate))),
+                                ),
+                              ]
+                          ),
+                          visible: _expiryDateVisibility,
+                        ),
+                      Visibility(
+                        child: Text("Expired", style: TextStyle(fontSize: 12, color: Colors.red),
+                        ),
+                        visible: _expiredVisibility,
+                      ),
+                    ]
+                  ),
                 ),
-                visible: _expiredVisibility,
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.edit,
-                color: Theme.of(context).accentColor,
               ),
-              onPressed: () {
-                _editNameAndExpiry(context);
-              },
-            ),
-            DropdownButton<String>(
-              value: widget.chosenQuantity,
-              items: <String>[
-                '1',
-                '2',
-                '3',
-                '4',
-                '5',
-                '6',
-                '7',
-                '8',
-                '9',
-                '10',
-              ].map<DropdownMenuItem<String>>((String qty) {
-                return DropdownMenuItem<String>(
-                  value: qty,
-                  child: Text(qty, style: Theme.of(context).textTheme.caption),
-                );
-              }).toList(),
-              onChanged: (String qty) {
-                setState(() {
-                  widget.chosenQuantity = qty;
-                  // save to db
-                });
-              },
-            ),
-            IconButton(
+              Text(widget.chosenQuantity, style: Theme.of(context).textTheme.bodyText2),
+              Text(widget.chosenUnit, style: Theme.of(context).textTheme.bodyText2),
+              IconButton(
                 icon: Icon(
-                  Icons.delete,
+                  Icons.edit,
                   color: Theme.of(context).accentColor,
                 ),
                 onPressed: () {
-                  _deleteConfirmation(context);
-                }
-            ),
-          ]
+                  _editNameAndExpiry(context);
+                },
+              ),
+              IconButton(
+                  icon: Icon(
+                    Icons.delete,
+                    color: Theme.of(context).accentColor,
+                  ),
+                  onPressed: () {
+                    _deleteConfirmation(context);
+                  }
+              ),
+            ]
+        ),
       ),
     visible: _visibilityTag
-    );}
+    );
+  }
 }

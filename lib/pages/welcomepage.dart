@@ -29,7 +29,7 @@ class WelcomePage extends StatelessWidget {
                 height: size.height / 3,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage("assets/images/burger.png"))),
+                        image: AssetImage("assets/images/Recipe Ventures.png"))),
               ),
               Column(
                 children: <Widget>[
@@ -38,10 +38,11 @@ class WelcomePage extends StatelessWidget {
                       height: 60,
                       onPressed: () {
                         print("Login Button Pressed");
-                        Navigator.push(
+                        Navigator.pushNamed(context,'/Login');
+                       /* Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => LoginPage()));
+                                builder: (context) => LoginPage()));*/
                       },
                       shape: RoundedRectangleBorder(
                           side: BorderSide(
@@ -57,10 +58,11 @@ class WelcomePage extends StatelessWidget {
                       height: 60,
                       onPressed: () {
                         print("Signup Button Pressed");
-                        Navigator.push(
+                        Navigator.pushNamed(context,'/Signup');
+                        /*Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SignupPage()));
+                                builder: (context) => SignupPage()));*/
                       },
                       shape: RoundedRectangleBorder(
                           side: BorderSide(width: 2.5, color: Colors.blue),

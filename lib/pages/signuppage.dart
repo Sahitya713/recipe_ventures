@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_ventures/controllers/authenticationController.dart';
+import 'package:recipe_ventures/controllers/userController.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:recipe_ventures/pages/loginpage.dart';
 
@@ -7,6 +9,12 @@ import 'navBar.dart';
 
 class SignupPage extends StatelessWidget {
   @override
+
+  final myEmailController = TextEditingController();
+  final myPasswordController = TextEditingController();
+  final myUsernameController = TextEditingController();
+  final myConfirmpasswordController = TextEditingController();
+
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -17,7 +25,8 @@ class SignupPage extends StatelessWidget {
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+            print('Back to welcome page');
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -46,10 +55,45 @@ class SignupPage extends StatelessWidget {
               ),
               Column(
                 children: <Widget>[
-                  inputFile(label: "Username"),
-                  inputFile(label: "Email"),
-                  inputFile(label: "Password", obscureText: true),
-                  inputFile(label: "Confirm Password ", obscureText: true),
+                  Text('Username', style: Theme.of(context).textTheme.subtitle1),
+                  SizedBox(height: 5),
+                  TextField(
+                      controller: myUsernameController,
+                      decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
+                          border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
+                      obscureText: false
+                  ),
+
+                  Text('Email Address', style: Theme.of(context).textTheme.subtitle1),
+                  SizedBox(height: 5),
+                  TextField(
+                      controller: myEmailController,
+                      decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
+                          border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
+                      obscureText: false
+                  ),
+
+                  Text('Password', style: Theme.of(context).textTheme.subtitle1),
+                  SizedBox(height: 5),
+                  TextField(
+                      controller: myPasswordController,
+                      decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
+                          border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
+                      obscureText: true
+                  ),
+
+                  Text('Confirm Password', style: Theme.of(context).textTheme.subtitle1),
+                  SizedBox(height: 5),
+                  TextField(
+                      controller: myConfirmpasswordController,
+                      decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
+                          border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
+                      obscureText: true
+                  ),
                 ],
               ),
               Container(
@@ -58,13 +102,75 @@ class SignupPage extends StatelessWidget {
                   minWidth: double.infinity,
                   height: 60,
                   onPressed: () async {
-                    dynamic x = await AuthenticationController()
-                        .registerWithEmailAndPassword(
-                            "test", "test@gmail.com", "password");
-                    print(x);
-                    print("sign up");
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Navbar()));
+                    print("Sign up pressed");
+                    bool samePassword = await AuthenticationController().checkSamePassword(
+                        myPasswordController.text.trim(),
+                        myConfirmpasswordController.text.trim());
+                    if (samePassword == true) {
+                      final signupCode = await AuthenticationController().registerWithEmailAndPassword(
+                          myUsernameController.text.trim(),
+                          myEmailController.text.trim(),
+                          myPasswordController.text.trim());
+                      if (signupCode == 'Pass') {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Navbar()));
+                      }
+                      else if (signupCode == 'WeakPassword') {
+                        showDialog(context: context, builder: (
+                            BuildContext context) {
+                          return AlertDialog(title: Text(
+                              "Password is too weak. Minimum 6 characters required."),
+                              titleTextStyle: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .subtitle1);
+                        });
+                      }
+                      else if (signupCode == 'ExistingAccount') {
+                        showDialog(context: context, builder: (
+                            BuildContext context) {
+                          return AlertDialog(title: Text(
+                              "Account with email already exists. Please log in."),
+                              titleTextStyle: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .subtitle1);
+                        });
+                      }
+                      else if (signupCode == 'InvalidEmail') {
+                        showDialog(context: context, builder: (
+                            BuildContext context) {
+                          return AlertDialog(title: Text(
+                              "The email address is badly formatted. Please try again with proper email address."),
+                              titleTextStyle: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .subtitle1);
+                        });
+                      }
+                      else if (signupCode == 'GenericError') {
+                        showDialog(context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(title: Text(
+                                  "Failed to sign up. Please try again with proper input."),
+                                  titleTextStyle: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .subtitle1);
+                            });
+                      }
+                    }
+                    else if (samePassword == false){
+                      showDialog(context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(title: Text(
+                                "Password confirmation does not match."),
+                                titleTextStyle: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .subtitle1);
+                          });
+                    }
                   },
                   color: Color(0xff0095FF),
                   elevation: 0,
@@ -83,10 +189,8 @@ class SignupPage extends StatelessWidget {
                       child: Text("Log in",
                           style: Theme.of(context).textTheme.button),
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()));
+                        Navigator.pushNamedAndRemoveUntil(context, '/Login',(_) => false);
+                        print('Signup -> Login Pressed');
                       }),
                 ],
               )
