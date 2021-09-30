@@ -1,11 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:recipe_ventures/pages/loginpage.dart';
 import 'package:recipe_ventures/pages/signuppage.dart';
+import 'package:recipe_ventures/controllers/loginController.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    if (FirebaseAuth.instance.currentUser != null)
+      LoginController().signOut();
     Size size = MediaQuery.of(context).size;
     // This size provides us total height and width of our screen
     return Scaffold(
@@ -21,7 +26,7 @@ class WelcomePage extends StatelessWidget {
               Column(
                 children: <Widget>[
                   Text("Welcome to Recipe Ventures",
-                      style: Theme.of(context).textTheme.headline3),
+                      style: Theme.of(context).textTheme.headline3, textAlign: TextAlign.center),
                   SizedBox(height: 10),
                 ],
               ),
@@ -65,7 +70,7 @@ class WelcomePage extends StatelessWidget {
                                 builder: (context) => SignupPage()));*/
                       },
                       shape: RoundedRectangleBorder(
-                          side: BorderSide(width: 2.5, color: Colors.blue),
+                          side: BorderSide(width: 2.5, color: Colors.black),
                           borderRadius: BorderRadius.circular(50)),
                       child: Text("Sign Up",
                           style: Theme.of(context).textTheme.button)),

@@ -23,10 +23,20 @@ class _NavbarState extends State<Navbar> {
     });
   }
 
+
+
+  Future printUsername() async {
+
+    var currentUserID = await AuthenticationController().getCurrUserFromFirestore();
+    //var currentUserID = await AuthenticationController().getCurrUserFromFirebase();
+    //print('Username is: ' + currentUserID.displayName + '' + currentUserID.email + '' + currentUserID.uid);
+    print('Username is ' + currentUserID);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final currentUserID = AuthenticationController().getCurrUserFromFirestore();
-    print(currentUserID);
+    printUsername();
+
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(

@@ -176,6 +176,7 @@ class SignupPage extends StatelessWidget {
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
+                    side: BorderSide(color: Colors.black, width: 1),
                   ),
                   child: Text("Sign up",
                       style: Theme.of(context).textTheme.button),

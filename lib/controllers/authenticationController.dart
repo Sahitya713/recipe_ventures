@@ -33,6 +33,8 @@ class AuthenticationController {
       return null;
     }
   }
+
+
   Future signInWithEmailAndPassword(String email, String password) async {
 
       try {UserCredential result = await _auth.signInWithEmailAndPassword(
@@ -86,8 +88,7 @@ class AuthenticationController {
     }
   }
 
-  Future<dynamic> registerWithEmailAndPassword(
-      String displayName, String email, String password) async {
+  Future<dynamic> registerWithEmailAndPassword(String displayName, String email, String password) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -115,16 +116,6 @@ class AuthenticationController {
         print(e.toString());
         return 'GenericError';
       }
-    }
-  }
-
-  Future signOut() async {
-    try {
-      print("trying to sign out");
-      return await _auth.signOut();
-    } catch (e) {
-      print(e.toString());
-      return null;
     }
   }
 }
