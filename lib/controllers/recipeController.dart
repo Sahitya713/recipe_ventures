@@ -4,11 +4,12 @@ import 'package:http/http.dart' as http;
 import 'package:recipe_ventures/data/recipe.dart';
 
 class RecipeController {
+  // generates recipes. pass in a list of ingredients. returns a json object with the recipes (curently returns 10)
   Future generateRecipes(List<String> ingredients) async {
     var url = Uri.https('api.spoonacular.com', '/recipes/findByIngredients', {
       "apiKey": "fdaee5a82b29439689e4bda0644cc60f",
       "ingredients": ingredients.join(","),
-      "number": "1",
+      // "number": "3",
       "sort": "max-used-ingredients"
     });
     var response = await http.get(url);
@@ -22,6 +23,7 @@ class RecipeController {
     }
   }
 
+  // get recipe details by passing in recipe id. returns a Recipe class instance.
   Future getRecipe(String id) async {
     var url = Uri.https('api.spoonacular.com', '/recipes/$id/information', {
       "apiKey": "fdaee5a82b29439689e4bda0644cc60f",
@@ -34,6 +36,7 @@ class RecipeController {
       Recipe x = Recipe.createRecipeFromRes(res);
       print(x);
       print(x.ingredients);
+      return x;
     } else {
       print(response.statusCode);
     }
