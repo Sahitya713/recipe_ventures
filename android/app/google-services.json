@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "325279034949-u6dietngjrfnsgo150rdv515p124a7b1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "orange.recipe_ventures",
+            "certificate_hash": "24f90b260630b9813af29d025fe578fbc2f1335c"
+          }
+        },
+        {
           "client_id": "325279034949-gh3irc7o09nkbhs1vq6b9taj7i0op7td.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -15,8 +15,11 @@ class FavRecipe {
     return x;
   }
 
-  static Stream<List<FavRecipe>> getFavRecipes() {
-    return _favRecipes.snapshots().map((snapshot) {
+  static Stream<List<FavRecipe>> getFavRecipes(String uid) {
+    return _favRecipes
+        .where('userID', isEqualTo: uid)
+        .snapshots()
+        .map((snapshot) {
       return snapshot.docs.map((doc) {
         return FavRecipe.createFavrecipeFromFirestore(doc);
       }).toList();

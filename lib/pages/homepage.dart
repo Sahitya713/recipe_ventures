@@ -1,11 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:recipe_ventures/controllers/authenticationController.dart';
+import 'package:recipe_ventures/controllers/loginController.dart';
+import 'package:provider/provider.dart';
 import 'package:recipe_ventures/pages/ingredientConfirmationPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -43,10 +49,23 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () async{
+            await LoginController().signOut();
+            Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+            print ('Back to welcome page');
+          },
+          icon: Icon(
+            Icons.logout,
+            size: 20,
+            color: Colors.black,
+          ),
+        ),
         centerTitle: true,
         title: Text('Welcome', style: Theme.of(context).textTheme.headline6),
       ),

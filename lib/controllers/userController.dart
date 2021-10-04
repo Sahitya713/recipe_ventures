@@ -15,12 +15,18 @@ class UserController {
       String displayName, String email, String uid) async {
     try {
       Map<String, dynamic> data = {};
-      data['displayName'] = displayName;
-      data['email'] = email;
-      data['uid'] = uid;
-      await users.doc(uid).set(data);
-      print('Successfully added user');
-      return;
+      if (users.doc(uid) != null)
+        {print ('User already exists');
+        return;
+        }
+      else{
+        data['displayName'] = displayName;
+        data['email'] = email;
+        data['uid'] = uid;
+        await users.doc(uid).set(data);
+        print('Successfully added user');
+        return;
+      }
     } catch (e) {
       print('Error in adding user');
       print(e.toString());
