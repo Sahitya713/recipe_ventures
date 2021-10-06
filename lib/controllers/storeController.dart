@@ -10,25 +10,32 @@ class StoreController {
   // add ingredients that are not already present in the store
   // for ingredients that are already present in store, just update the quantity (not increase)
   Future addIngredients(List<Map> ingredientsToAdd, String uid) async {
-    final batch = firestore.batch();
-    ingredientsToAdd.forEach((element) async {
-      Map<String, dynamic> data =
-          element.map((key, value) => MapEntry(key.toString(), value));
+    WriteBatch batch = firestore.batch();
+    await Future.forEach(ingredientsToAdd, (data) async {
+      // print(element.runtimeType);
+      // Map<String, dynamic> data =
+      //     element.map((key, value) => MapEntry(key.toString(), value));
       final ingredient = await ingredients
           .where("userID", isEqualTo: uid)
           .where("name", isEqualTo: data["name"])
           .get();
-      if (ingredient == null) {
+
+      if (ingredient.docs.length == 0) {
         data["userID"] = uid;
+
         final newDocRef = ingredients.doc();
         batch.set(newDocRef, data);
       } else {
-        updateIngredient(
-            ingredientId: ingredient.docs[0].id, ingredientDetails: data);
+        batch.update(ingredient.docs[0].reference, data);
       }
     });
-
-    return await batch.commit();
+    try {
+      var res = await batch.commit();
+      return "success";
+    } catch (e) {
+      print(e.toString());
+      return e.toString();
+    }
   }
 
   // update ingredient information. (expiry date or qty). pass it as a map with new details and indredient id.

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:recipe_ventures/components/ingredient.dart';
+import 'package:recipe_ventures/controllers/storeController.dart';
 import 'package:recipe_ventures/pages/recipeslist.dart';
 
 import '../main.dart';
@@ -36,11 +37,10 @@ class _StoreState extends State<Store> {
 
   _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now().add(Duration(hours: 1)),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2101)
-    );
+        context: context,
+        initialDate: DateTime.now().add(Duration(hours: 1)),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
@@ -51,7 +51,7 @@ class _StoreState extends State<Store> {
   _addIngredient(BuildContext context) {
     return showDialog(
         context: context,
-        builder: (context){
+        builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
@@ -78,7 +78,8 @@ class _StoreState extends State<Store> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text('Expires on $_expiry', style: Theme.of(context).textTheme.caption),
+                            Text('Expires on $_expiry',
+                                style: Theme.of(context).textTheme.caption),
                             IconButton(
                               icon: Icon(
                                 Icons.calendar_today,
@@ -86,8 +87,7 @@ class _StoreState extends State<Store> {
                               ),
                               onPressed: () => _selectDate(context),
                             ),
-                          ]
-                      ),
+                          ]),
                       Text("Please input quantity of ingredient:",
                           style: Theme.of(context).textTheme.bodyText2),
                       TextField(
@@ -118,7 +118,9 @@ class _StoreState extends State<Store> {
                               ].map<DropdownMenuItem<String>>((String qty) {
                                 return DropdownMenuItem<String>(
                                   value: qty,
-                                  child: Text(qty, style: Theme.of(context).textTheme.caption),
+                                  child: Text(qty,
+                                      style:
+                                          Theme.of(context).textTheme.caption),
                                 );
                               }).toList(),
                               onChanged: (String unit) {
@@ -127,10 +129,8 @@ class _StoreState extends State<Store> {
                                 });
                               },
                             ),
-                          ]
-                      ),
-                    ]
-                ),
+                          ]),
+                    ]),
               ),
               actions: [
                 Row(
@@ -156,27 +156,26 @@ class _StoreState extends State<Store> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        leading: Visibility(
-          child: IconButton(
-            icon: Icon(
-              Icons.select_all,
-              color: Theme.of(context).accentColor,
+          leading: Visibility(
+            child: IconButton(
+              icon: Icon(
+                Icons.select_all,
+                color: Theme.of(context).accentColor,
+              ),
+              onPressed: () {
+                setState(() {
+                  _selectAll = !_selectAll;
+                });
+              },
             ),
-            onPressed: () {
-              setState(() {
-                _selectAll = !_selectAll;
-              });
-            },
+            visible: _checkboxVisible,
           ),
-          visible: _checkboxVisible,
-        ),
-        centerTitle: true,
-        title: Text('Store', style: Theme.of(context).textTheme.headline6),
-        actions: [
-          Visibility(
+          centerTitle: true,
+          title: Text('Store', style: Theme.of(context).textTheme.headline6),
+          actions: [
+            Visibility(
               child: MaterialButton(
                 child: Align(
                   alignment: Alignment.center,
@@ -192,12 +191,11 @@ class _StoreState extends State<Store> {
                   });
                 },
               ),
-            visible: _checkboxVisible,
-          ),
-        ]
-      ),
+              visible: _checkboxVisible,
+            ),
+          ]),
       body: // can use a list view builder to iterate and display
-      Column(
+          Column(
         children: [
           Ingredient(
             ingredientName: 'egg',
@@ -222,16 +220,15 @@ class _StoreState extends State<Store> {
                 onPressed: () {
                   setState(() {
                     if (recipeGetter != 'Generate Recipes') {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => RecipeList()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => RecipeList()));
                     }
                     _checkboxVisible = true;
                     recipeGetter = 'Get Recipes';
                   });
                 },
                 child: Text(recipeGetter,
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFFFEA54B))),
+                    style: TextStyle(fontSize: 20, color: Color(0xFFFEA54B))),
               ),
             ),
           ),
@@ -239,13 +236,21 @@ class _StoreState extends State<Store> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _addIngredient(context);
+          // _addIngredient(context);
+          Map<String, dynamic> x = new Map<String, dynamic>();
+          x["name"] = "egg";
+          x["quantiy"] = 4;
+          x["metric"] = "kg";
+          Map<String, dynamic> y = new Map();
+          y["name"] = "potatoes";
+          y["quantiy"] = 4;
+          y["metric"] = "kg";
+          print(x.runtimeType);
+          StoreController().addIngredients([x, y], "TO1YWqA3QHnKf1bFJAkg");
         },
         child: const Icon(Icons.add),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      );
-
-
+    );
   }
 }
