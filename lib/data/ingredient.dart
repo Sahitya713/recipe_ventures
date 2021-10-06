@@ -13,8 +13,6 @@ class Ingredient {
       {this.name, this.userID, this.expiryDate, this.quantity, this.metric});
   factory Ingredient.createIngredientFromFirestore(DocumentSnapshot doc) {
     Map data = doc.data();
-    print("printing data");
-    print(data);
 
     // if (data == null) return null;
     Ingredient x = Ingredient(
@@ -25,8 +23,6 @@ class Ingredient {
             (data['expiryDate'] != null) ? data['expiryDate'].toDate() : null,
         userID: data['userID'] ?? '');
 
-    print("printing x.name");
-    print(x.name);
     return x;
   }
 

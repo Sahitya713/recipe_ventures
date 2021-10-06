@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:recipe_ventures/data/ingredient.dart';
+import 'package:recipe_ventures/utils/globals.dart';
 
 import '../main.dart';
 
@@ -256,13 +257,27 @@ class _IngredientComponentState extends State<IngredientComponent> {
                     value: widget.selectAll ? widget.selectAll : _checked,
                     onChanged: (value) {
                       setState(() {
-                        if (widget.selectAll) {
-                          _checked = widget.selectAll;
+                        if (widget.selectAll && !value) {
+                          _checked = value;
                           widget.selectAll = !widget.selectAll;
-                          _checked = !_checked;
+                          if (selectedIngredients.contains(widget.ingredientName)) {
+                            selectedIngredients.remove(widget.ingredientName);
+                          }
                         }
-                        else {
-                          _checked = !_checked;
+                        else if (widget.selectAll && value) {
+                          _checked = value;
+                          widget.selectAll = !widget.selectAll;
+                          selectedIngredients.add(widget.ingredientName);
+                        }
+                        else if (!widget.selectAll && value) {
+                          _checked = value;
+                          selectedIngredients.add(widget.ingredientName);
+                        }
+                        else if (!widget.selectAll && !value) {
+                          _checked = value;
+                          if (selectedIngredients.contains(widget.ingredientName)) {
+                            selectedIngredients.remove(widget.ingredientName);
+                          }
                         }
                       });
                     }),

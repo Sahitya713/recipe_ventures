@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,7 @@ import 'package:recipe_ventures/controllers/authenticationController.dart';
 import 'package:recipe_ventures/controllers/storeController.dart';
 import 'package:recipe_ventures/data/ingredient.dart';
 import 'package:recipe_ventures/pages/recipeslist.dart';
+import 'package:recipe_ventures/utils/globals.dart';
 
 import '../main.dart';
 
@@ -23,16 +25,13 @@ class _StoreState extends State<Store> {
   bool _checkboxVisible = false;
   String recipeGetter = 'Generate Recipes';
   bool _selectAll = false;
-  String userID;
   String _ingredientName;
   String _quantity;
   StoreController sc = StoreController();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String userID;
 
-  Future getUserID() async {
-    var currentUserID = AuthenticationController().getCurrUserFromFirebase();
-    // print(currentUserID.uid);
-    return currentUserID.uid;
-  }
+
 
 
 
@@ -42,7 +41,6 @@ class _StoreState extends State<Store> {
     super.initState();
     _nameController = TextEditingController();
     _quantityController = TextEditingController();
-    getUserID().then((value) => userID = value);
   }
 
   @override
@@ -162,7 +160,7 @@ class _StoreState extends State<Store> {
                               'name': _ingredientName,
                               'quantity': _quantity,
                               'metric': _chosenUnit,
-                              'expiryDate': _expiry,
+                              'expiryDate': DateFormat("yyyy-MM-dd").parse(_expiry),
                             }
                           ];
                           sc.addIngredients(ingredientsToAdd, userID); // create ingredient obj then add
@@ -182,6 +180,7 @@ class _StoreState extends State<Store> {
 
   Widget _buildIngredientList(List<dynamic> ingredientList, checkboxVisible, selectAll) {
     print("inside build ingredient list");
+    print(ingredientList.length);
     return ListView.builder(
           itemCount: ingredientList.length,
           itemBuilder: (BuildContext context, int index) {
@@ -192,22 +191,162 @@ class _StoreState extends State<Store> {
                 chosenUnit: ingredientObj.metric,
                 expiryDate: ingredientObj.expiryDate,
                 checkboxVisibility: checkboxVisible,
-                selectAll: selectAll);
+                selectAll: selectAll
+                );
           }
       );
   }
 
   @override
   Widget build(BuildContext context) {
-    getUserID().then((value) => userID = value);
-    // print("userID is: " + userID);
-    return StreamBuilder<List<dynamic>>(
-      stream: Ingredient.getStore("wHUYMSwrhBWajUyw8QqLbvfEuIr1"),
-      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if (snapshot.data != null) {
-          print("printing snapshot.data");
-          print(snapshot.data.length);
-          print(userID);
+    return StreamBuilder(
+        stream: auth.authStateChanges(),
+        builder: (context, AsyncSnapshot<User> user) {
+          if (user.hasData) {
+            print(user.data.uid);
+            return StreamBuilder<List<dynamic>>(
+                stream: Ingredient.getStore(user.data.uid),
+                builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+                  if (snapshot.hasData) {
+                    print("printing snapshot.data");
+                    print(snapshot.data.length);
+                    print(userID);
+                    return Scaffold(
+                      appBar: AppBar(
+                          leading: Visibility(
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.select_all,
+                                color: Theme.of(context).accentColor,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _selectAll = !_selectAll;
+                                });
+                              },
+                            ),
+                            visible: _checkboxVisible,
+                          ),
+                          centerTitle: true,
+                          title: Text('Store', style: Theme.of(context).textTheme.headline6),
+                          actions: [
+                            Visibility(
+                              child: MaterialButton(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Cancel',
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _checkboxVisible = false;
+                                    recipeGetter = 'Generate Recipes';
+                                  });
+                                },
+                              ),
+                              visible: _checkboxVisible,
+                            ),
+                          ]
+                      ),
+                      body: // can use a list view builder to iterate and display
+                      Column(
+                        children: [
+                          Expanded(
+                            child: _buildIngredientList(snapshot.data, _checkboxVisible, _selectAll),
+                          ),
+                          Expanded(
+                            child: Align(
+                              alignment: FractionalOffset.bottomCenter,
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (recipeGetter != 'Generate Recipes') {
+                                      // generate recipes
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => RecipeList()));
+                                    }
+                                    selectedIngredients = [];
+                                    _checkboxVisible = true;
+                                    recipeGetter = 'Get Recipes';
+                                  });
+                                },
+                                child: Text(recipeGetter,
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Color(0xFFFEA54B))),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      floatingActionButton: FloatingActionButton(
+                        onPressed: () {
+                          _addIngredient(context);
+                        },
+                        child: const Icon(Icons.add),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                    );
+                  }
+                  else {
+                    return Scaffold(
+                      appBar: AppBar(
+                          leading: Visibility(
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.select_all,
+                                color: Theme.of(context).accentColor,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _selectAll = !_selectAll;
+                                });
+                              },
+                            ),
+                            visible: _checkboxVisible,
+                          ),
+                          centerTitle: true,
+                          title: Text('Store', style: Theme.of(context).textTheme.headline6),
+                          actions: [
+                            Visibility(
+                              child: MaterialButton(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Cancel',
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _checkboxVisible = false;
+                                    recipeGetter = 'Generate Recipes';
+                                  });
+                                },
+                              ),
+                              visible: _checkboxVisible,
+                            ),
+                          ]
+                      ),
+                      body: // can use a list view builder to iterate and display
+                      Column(
+                        children: [
+
+                        ],
+                      ),
+                      floatingActionButton: FloatingActionButton(
+                        onPressed: () {
+                          _addIngredient(context);
+                        },
+                        child: const Icon(Icons.add),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                    );
+                  }
+                }
+            );
+          }
           return Scaffold(
             appBar: AppBar(
                 leading: Visibility(
@@ -250,30 +389,7 @@ class _StoreState extends State<Store> {
             body: // can use a list view builder to iterate and display
             Column(
               children: [
-                Expanded(
-                    child: _buildIngredientList(snapshot.data, _checkboxVisible, _selectAll),
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: FractionalOffset.bottomCenter,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        setState(() {
-                          if (recipeGetter != 'Generate Recipes') {
-                            // generate recipes
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => RecipeList()));
-                          }
-                          _checkboxVisible = true;
-                          recipeGetter = 'Get Recipes';
-                        });
-                      },
-                      child: Text(recipeGetter,
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Color(0xFFFEA54B))),
-                    ),
-                  ),
-                ),
+                Center(child: CircularProgressIndicator())
               ],
             ),
             floatingActionButton: FloatingActionButton(
@@ -284,66 +400,6 @@ class _StoreState extends State<Store> {
               backgroundColor: Theme.of(context).primaryColor,
             ),
           );
-        }
-        else {
-          return Scaffold(
-            appBar: AppBar(
-                leading: Visibility(
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.select_all,
-                      color: Theme.of(context).accentColor,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _selectAll = !_selectAll;
-                      });
-                    },
-                  ),
-                  visible: _checkboxVisible,
-                ),
-                centerTitle: true,
-                title: Text('Store', style: Theme.of(context).textTheme.headline6),
-                actions: [
-                  Visibility(
-                    child: MaterialButton(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Cancel',
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _checkboxVisible = false;
-                          recipeGetter = 'Generate Recipes';
-                        });
-                      },
-                    ),
-                    visible: _checkboxVisible,
-                  ),
-                ]
-            ),
-            body: // can use a list view builder to iterate and display
-            Column(
-              children: [
-
-              ],
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                _addIngredient(context);
-              },
-              child: const Icon(Icons.add),
-              backgroundColor: Theme.of(context).primaryColor,
-            ),
-          );
-        }
-      }
-    );
-
-
-
+          });
   }
 }
