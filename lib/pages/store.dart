@@ -236,17 +236,12 @@ class _StoreState extends State<Store> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // _addIngredient(context);
-          Map<String, dynamic> x = new Map<String, dynamic>();
-          x["name"] = "egg";
-          x["quantiy"] = 4;
-          x["metric"] = "kg";
-          Map<String, dynamic> y = new Map();
-          y["name"] = "potatoes";
-          y["quantiy"] = 4;
-          y["metric"] = "kg";
-          print(x.runtimeType);
-          StoreController().addIngredients([x, y], "TO1YWqA3QHnKf1bFJAkg");
+          _addIngredient(context);
+          // Map<String, dynamic> x = new Map();
+          // x["name"] = "egg";
+          // x["quantity"] = 2;
+          // x["metric"] = "l";
+          // StoreController().addIngredients([x], "TO1YWqA3QHnKf1bFJAkg");
         },
         child: const Icon(Icons.add),
         backgroundColor: Theme.of(context).primaryColor,
