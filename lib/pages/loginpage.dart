@@ -30,7 +30,7 @@ class LoginPage extends StatelessWidget {
             return Navbar();
           }
           else{
-            print ('Snapshot has no data');
+            // print ('Snapshot has no data');
             return SignInWidget();
           }
         },

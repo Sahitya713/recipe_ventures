@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:recipe_ventures/data/ingredient.dart';
 
 import '../main.dart';
 
-class Ingredient extends StatefulWidget{
+class IngredientComponent extends StatefulWidget{
   String ingredientName;
   String chosenQuantity;
   String chosenUnit;
@@ -12,7 +13,7 @@ class Ingredient extends StatefulWidget{
   bool checkboxVisibility;
   bool selectAll;
 
-  Ingredient({
+  IngredientComponent({
     @required this.ingredientName,
     @required this.chosenQuantity,
     @required this.chosenUnit,
@@ -22,10 +23,10 @@ class Ingredient extends StatefulWidget{
   });
 
   @override
-  _IngredientState createState() => _IngredientState();
+  _IngredientComponentState createState() => _IngredientComponentState();
 }
 
-class _IngredientState extends State<Ingredient> {
+class _IngredientComponentState extends State<IngredientComponent> {
   TextEditingController _nameController;
   TextEditingController _quantityController;
   bool _visibilityTag = true;
