@@ -8,6 +8,14 @@ class FavRecipe {
 
   FavRecipe({this.title, this.id});
 
+  String getTitle() {
+    return title;
+  }
+
+  String getId() {
+    return id;
+  }
+
   factory FavRecipe.createFavRecipeFromFirestore(DocumentSnapshot doc) {
     Map data = doc.data();
 

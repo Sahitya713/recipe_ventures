@@ -28,6 +28,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  floor_generator: any
+  build_runner: any
 
 flutter:
   uses-material-design: true
