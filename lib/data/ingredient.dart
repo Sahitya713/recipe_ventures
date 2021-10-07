@@ -15,13 +15,13 @@ class Ingredient {
     Map data = doc.data();
 
     // if (data == null) return null;
-    Ingredient x = Ingredient(
-        name: data['name'] ?? null,
-        quantity: data['quantity'] ?? 0,
-        metric: data['metric'] ?? "items",
+    var x = Ingredient(
+        name: data["name"] ?? "",
+        quantity: data["quantity"] ?? 0,
+        metric: data["metric"] ?? "items",
         expiryDate:
-            (data['expiryDate'] != null) ? data['expiryDate'].toDate() : null,
-        userID: data['userID'] ?? '');
+            (data["expiryDate"] != null) ? data["expiryDate"].toDate() : "null",
+        userID: data["userID"] ?? '');
 
     return x;
   }
@@ -39,5 +39,4 @@ class Ingredient {
       }).toList();
     });
   }
-
 }
