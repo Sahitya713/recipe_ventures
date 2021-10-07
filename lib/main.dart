@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,6 +11,8 @@ import 'package:provider/provider.dart';
 import 'package:recipe_ventures/pages/welcomepage.dart';
 import 'package:recipe_ventures/pages/loginpage.dart';
 import 'package:recipe_ventures/pages/signuppage.dart';
+import 'package:recipe_ventures/wrapper.dart';
+import 'utils/globals.dart' as globals;
 
 import 'data/appUser.dart';
 
@@ -42,6 +45,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    User currUser = FirebaseAuth.instance.currentUser;
+    globals.currUserId = (currUser == null) ? null : currUser.uid;
+
     return MultiProvider(
         providers: [
           StreamProvider<AppUser>.value(value: AppUser.getCurrentUser())
@@ -50,11 +56,11 @@ class MyApp extends StatelessWidget {
           builder: (context, theme, _) => MaterialApp(
             theme: theme.getTheme(),
             initialRoute: '/',
-            routes:{
-            '/':(context) => WelcomePage(),
-            '/Login':(context) => LoginPage(),
-            '/Signup':(context) => SignupPage(),}
-        ,
+            routes: {
+              '/': (context) => Wrapper(),
+              '/Login': (context) => LoginPage(),
+              '/Signup': (context) => SignupPage(),
+            },
             // MainPage(),
           ),
         ));

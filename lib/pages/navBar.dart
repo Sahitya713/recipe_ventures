@@ -23,14 +23,12 @@ class _NavbarState extends State<Navbar> {
     });
   }
 
-
-
   Future printUsername() async {
-
-    var currentUserID = await AuthenticationController().getCurrUserFromFirestore();
+    // var currentUserID =
+    // await AuthenticationController().getCurrUserFromFirestore();
     //var currentUserID = await AuthenticationController().getCurrUserFromFirebase();
     //print('Username is: ' + currentUserID.displayName + '' + currentUserID.email + '' + currentUserID.uid);
-    print('Username is ' + currentUserID);
+    // print('Username is ' + currentUserID);
   }
 
   @override
@@ -45,13 +43,17 @@ class _NavbarState extends State<Navbar> {
           onTap: onTappedBar,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-                icon: Icon(Icons.favorite, size: iconSize, color: Theme.of(context).accentColor),
+                icon: Icon(Icons.favorite,
+                    size: iconSize, color: Theme.of(context).accentColor),
                 label: 'Favourites'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.add_a_photo, size: iconSize, color: Theme.of(context).accentColor),
+                icon: Icon(Icons.add_a_photo,
+                    size: iconSize, color: Theme.of(context).accentColor),
                 label: 'Upload Image'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.kitchen, size: iconSize, color: Theme.of(context).accentColor), label: 'Store')
+                icon: Icon(Icons.kitchen,
+                    size: iconSize, color: Theme.of(context).accentColor),
+                label: 'Store')
           ]),
     );
   }

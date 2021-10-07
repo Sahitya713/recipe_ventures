@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -49,16 +50,16 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () async{
+          onPressed: () async {
             await LoginController().signOut();
-            Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
-            print ('Back to welcome page');
+            Phoenix.rebirth(context);
+            // Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+            // print ('Back to welcome page');
           },
           icon: Icon(
             Icons.logout,
@@ -140,7 +141,12 @@ class _HomepageState extends State<Homepage> {
                       ElevatedButton(
                         onPressed: () {
                           // Get list of ingredient
-                          List ingredients = ['apple', 'pear', 'orange', 'Change the widget'];
+                          List ingredients = [
+                            'apple',
+                            'pear',
+                            'orange',
+                            'Change the widget'
+                          ];
                           Navigator.push(
                             context,
                             MaterialPageRoute(

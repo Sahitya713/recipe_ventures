@@ -1,7 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:recipe_ventures/components/ingredient.dart';
+import 'package:recipe_ventures/components/ingredientComponent.dart';
+import 'package:recipe_ventures/controllers/authenticationController.dart';
+import 'package:recipe_ventures/controllers/storeController.dart';
+import 'package:recipe_ventures/data/ingredient.dart';
 import 'package:recipe_ventures/pages/recipeslist.dart';
+import 'package:recipe_ventures/utils/globals.dart' as globals;
 
 import '../main.dart';
 
@@ -19,6 +25,11 @@ class _StoreState extends State<Store> {
   bool _checkboxVisible = false;
   String recipeGetter = 'Generate Recipes';
   bool _selectAll = false;
+  String _ingredientName;
+  String _quantity;
+  StoreController sc = StoreController();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String userID = globals.currUserId;
 
   @override
   void initState() {
@@ -36,11 +47,10 @@ class _StoreState extends State<Store> {
 
   _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now().add(Duration(hours: 1)),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2101)
-    );
+        context: context,
+        initialDate: DateTime.now().add(Duration(hours: 1)),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
@@ -51,7 +61,7 @@ class _StoreState extends State<Store> {
   _addIngredient(BuildContext context) {
     return showDialog(
         context: context,
-        builder: (context){
+        builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
@@ -64,9 +74,9 @@ class _StoreState extends State<Store> {
                           style: Theme.of(context).textTheme.bodyText2),
                       TextField(
                         onChanged: (newName) {
-                          // setState(() {
-                          //   _ingredientName = newName;
-                          // });
+                          setState(() {
+                            _ingredientName = newName;
+                          });
                         },
                         controller: _nameController,
                       ),
@@ -78,7 +88,8 @@ class _StoreState extends State<Store> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text('Expires on $_expiry', style: Theme.of(context).textTheme.caption),
+                            Text('Expires on $_expiry',
+                                style: Theme.of(context).textTheme.caption),
                             IconButton(
                               icon: Icon(
                                 Icons.calendar_today,
@@ -86,16 +97,15 @@ class _StoreState extends State<Store> {
                               ),
                               onPressed: () => _selectDate(context),
                             ),
-                          ]
-                      ),
+                          ]),
                       Text("Please input quantity of ingredient:",
                           style: Theme.of(context).textTheme.bodyText2),
                       TextField(
                         keyboardType: TextInputType.number,
-                        onChanged: (newName) {
-                          // setState(() {
-                          //   _ingredientName = newName;
-                          // });
+                        onChanged: (newQty) {
+                          setState(() {
+                            _quantity = newQty;
+                          });
                         },
                         controller: _quantityController,
                       ),
@@ -118,7 +128,9 @@ class _StoreState extends State<Store> {
                               ].map<DropdownMenuItem<String>>((String qty) {
                                 return DropdownMenuItem<String>(
                                   value: qty,
-                                  child: Text(qty, style: Theme.of(context).textTheme.caption),
+                                  child: Text(qty,
+                                      style:
+                                          Theme.of(context).textTheme.caption),
                                 );
                               }).toList(),
                               onChanged: (String unit) {
@@ -127,10 +139,8 @@ class _StoreState extends State<Store> {
                                 });
                               },
                             ),
-                          ]
-                      ),
-                    ]
-                ),
+                          ]),
+                    ]),
               ),
               actions: [
                 Row(
@@ -139,7 +149,19 @@ class _StoreState extends State<Store> {
                     MaterialButton(
                         child: Text('ok'),
                         onPressed: () {
-                          // save ingredient details to db & refresh the store page
+                          var ingredientsToAdd = [
+                            {
+                              'name': _ingredientName,
+                              'quantity': int.parse(_quantity),
+                              'metric': _chosenUnit,
+                              'expiryDate':
+                                  DateFormat("yyyy-MM-dd").parse(_expiry),
+                            }
+                          ];
+                          print("adding ingrdient");
+                          print(userID);
+                          sc.addIngredients(ingredientsToAdd,
+                              userID); // create ingredient obj then add
                           _nameController.clear();
                           _quantityController.clear();
                           _expiry = '-';
@@ -154,98 +176,229 @@ class _StoreState extends State<Store> {
         });
   }
 
+  Widget _buildIngredientList(
+      List<dynamic> ingredientList, checkboxVisible, selectAll) {
+    print("inside build ingredient list");
+    print(ingredientList.length);
+    return ListView.builder(
+        itemCount: ingredientList.length,
+        itemBuilder: (BuildContext context, int index) {
+          Ingredient ingredientObj = ingredientList[index];
+          return IngredientComponent(
+              ingredientName: ingredientObj.name,
+              chosenQuantity: ingredientObj.quantity.toString(),
+              chosenUnit: ingredientObj.metric,
+              expiryDate: ingredientObj.expiryDate,
+              checkboxVisibility: checkboxVisible,
+              selectAll: selectAll);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-      appBar: AppBar(
-        leading: Visibility(
-          child: IconButton(
-            icon: Icon(
-              Icons.select_all,
-              color: Theme.of(context).accentColor,
-            ),
-            onPressed: () {
-              setState(() {
-                _selectAll = !_selectAll;
-              });
-            },
-          ),
-          visible: _checkboxVisible,
-        ),
-        centerTitle: true,
-        title: Text('Store', style: Theme.of(context).textTheme.headline6),
-        actions: [
-          Visibility(
-              child: MaterialButton(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Cancel',
-                    style: Theme.of(context).textTheme.bodyText2,
+    print(userID);
+    return StreamBuilder(
+        stream: auth.authStateChanges(),
+        builder: (context, AsyncSnapshot<User> user) {
+          if (user.hasData) {
+            // print(user.data.uid);
+            return StreamBuilder<List<dynamic>>(
+                stream: Ingredient.getStore(userID),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<dynamic>> snapshot) {
+                  if (snapshot.hasData) {
+                    print("printing snapshot.data");
+                    print(snapshot.data.length);
+                    print(userID);
+                    return Scaffold(
+                      appBar: AppBar(
+                          leading: Visibility(
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.select_all,
+                                color: Theme.of(context).accentColor,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _selectAll = !_selectAll;
+                                });
+                              },
+                            ),
+                            visible: _checkboxVisible,
+                          ),
+                          centerTitle: true,
+                          title: Text('Store',
+                              style: Theme.of(context).textTheme.headline6),
+                          actions: [
+                            Visibility(
+                              child: MaterialButton(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Cancel',
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _checkboxVisible = false;
+                                    recipeGetter = 'Generate Recipes';
+                                  });
+                                },
+                              ),
+                              visible: _checkboxVisible,
+                            ),
+                          ]),
+                      body: // can use a list view builder to iterate and display
+                          Column(
+                        children: [
+                          Expanded(
+                            child: _buildIngredientList(
+                                snapshot.data, _checkboxVisible, _selectAll),
+                          ),
+                          Expanded(
+                            child: Align(
+                              alignment: FractionalOffset.bottomCenter,
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (recipeGetter != 'Generate Recipes') {
+                                      // generate recipes
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RecipeList()));
+                                    }
+                                    globals.selectedIngredients = [];
+                                    _checkboxVisible = true;
+                                    recipeGetter = 'Get Recipes';
+                                  });
+                                },
+                                child: Text(recipeGetter,
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Color(0xFFFEA54B))),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      floatingActionButton: FloatingActionButton(
+                        onPressed: () {
+                          _addIngredient(context);
+                        },
+                        child: const Icon(Icons.add),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                    );
+                  } else {
+                    return Scaffold(
+                      appBar: AppBar(
+                          leading: Visibility(
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.select_all,
+                                color: Theme.of(context).accentColor,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _selectAll = !_selectAll;
+                                });
+                              },
+                            ),
+                            visible: _checkboxVisible,
+                          ),
+                          centerTitle: true,
+                          title: Text('Store',
+                              style: Theme.of(context).textTheme.headline6),
+                          actions: [
+                            Visibility(
+                              child: MaterialButton(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Cancel',
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _checkboxVisible = false;
+                                    recipeGetter = 'Generate Recipes';
+                                  });
+                                },
+                              ),
+                              visible: _checkboxVisible,
+                            ),
+                          ]),
+                      body: // can use a list view builder to iterate and display
+                          Column(
+                        children: [],
+                      ),
+                      floatingActionButton: FloatingActionButton(
+                        onPressed: () {
+                          _addIngredient(context);
+                        },
+                        child: const Icon(Icons.add),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                    );
+                  }
+                });
+          }
+          return Scaffold(
+            appBar: AppBar(
+                leading: Visibility(
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.select_all,
+                      color: Theme.of(context).accentColor,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _selectAll = !_selectAll;
+                      });
+                    },
                   ),
+                  visible: _checkboxVisible,
                 ),
-                onPressed: () {
-                  setState(() {
-                    _checkboxVisible = false;
-                    recipeGetter = 'Generate Recipes';
-                  });
-                },
-              ),
-            visible: _checkboxVisible,
-          ),
-        ]
-      ),
-      body: // can use a list view builder to iterate and display
-      Column(
-        children: [
-          Ingredient(
-            ingredientName: 'egg',
-            chosenQuantity: '2',
-            chosenUnit: 'units',
-            expiryDate: DateTime(2021, 9, 22),
-            checkboxVisibility: _checkboxVisible,
-            selectAll: _selectAll,
-          ),
-          Ingredient(
-            ingredientName: 'chicken',
-            chosenQuantity: '2',
-            chosenUnit: 'units',
-            expiryDate: DateTime(2021, 9, 28),
-            checkboxVisibility: _checkboxVisible,
-            selectAll: _selectAll,
-          ),
-          Expanded(
-            child: Align(
-              alignment: FractionalOffset.bottomCenter,
-              child: OutlinedButton(
-                onPressed: () {
-                  setState(() {
-                    if (recipeGetter != 'Generate Recipes') {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => RecipeList()));
-                    }
-                    _checkboxVisible = true;
-                    recipeGetter = 'Get Recipes';
-                  });
-                },
-                child: Text(recipeGetter,
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFFFEA54B))),
-              ),
+                centerTitle: true,
+                title:
+                    Text('Store', style: Theme.of(context).textTheme.headline6),
+                actions: [
+                  Visibility(
+                    child: MaterialButton(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Cancel',
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _checkboxVisible = false;
+                          recipeGetter = 'Generate Recipes';
+                        });
+                      },
+                    ),
+                    visible: _checkboxVisible,
+                  ),
+                ]),
+            body: // can use a list view builder to iterate and display
+                Column(
+              children: [Center(child: CircularProgressIndicator())],
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _addIngredient(context);
-        },
-        child: const Icon(Icons.add),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      );
-
-
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                _addIngredient(context);
+              },
+              child: const Icon(Icons.add),
+              backgroundColor: Theme.of(context).primaryColor,
+            ),
+          );
+        });
   }
 }
