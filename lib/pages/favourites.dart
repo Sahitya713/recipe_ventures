@@ -1,10 +1,6 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:recipe_ventures/data/favRecipe.dart';
-//
-// class Favourites extends StatelessWidget {
-//
-// }
 
 class Favourites extends StatefulWidget {
   @override
@@ -44,6 +40,8 @@ class _FavouritesState extends State<Favourites> {
                 onPressed: () {
                   setState(() {
                     if (isSaved) {
+                      // use when recipe page is up
+                      // deleteFavourite(String favRecipeID);
                       items.remove(fav);
                     } else {
                       items.add(fav);
@@ -56,58 +54,3 @@ class _FavouritesState extends State<Favourites> {
     );
   }
 }
-
-// FavRecipe({this.title, this.id});
-// Navigator.push(context,
-// MaterialPageRoute(builder: (context) => Navbar()))
-//
-// body: SingleChildScrollView(
-// child: Column(
-// children: [
-// ListView.builder(
-// itemCount: items.length,
-// shrinkWrap: true,
-// physics: NeverScrollableScrollPhysics(),
-// itemBuilder: (context, index) {
-// return ListTile(
-// title: Text(items[index].title),
-// );
-// },
-// ),
-// ],
-// ),
-// ),
-
-// future: readJsonDatabase(),
-// builder:(context, snapshot){
-// if (snapshot.hasError) {
-// return Center(
-// child: Text('${snapshot.error}'),
-// );
-// }
-// else if (snapshot.hasData) {
-// var items = snapshot.data as List<FavRecipe>;
-// return ListView.builder(
-// itemCount: items == null ? 0 : items.length,
-// itemBuilder: (context, index){
-// return Card(elevation: 8,
-// margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-// child: Container(
-// padding: const EdgeInsets.all(8),
-// child: Row(
-// mainAxisAlignment: MainAxisAlignment.center,
-// crossAxisAlignment: CrossAxisAlignment.center,
-// children: [
-// Expanded(child: )
-// ],
-//
-// ),
-// );
-// }
-// );
-// }
-// else return Center(child: CircularProgressIndicator(),);
-//
-// )
-// }
-// }));
