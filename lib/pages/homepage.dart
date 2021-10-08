@@ -13,6 +13,7 @@ import 'package:recipe_ventures/controllers/loginController.dart';
 import 'package:provider/provider.dart';
 import 'package:recipe_ventures/pages/ingredientConfirmationPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:recipe_ventures/pages/settingspage.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -69,6 +70,14 @@ class _HomepageState extends State<Homepage> {
         ),
         centerTitle: true,
         title: Text('Welcome', style: Theme.of(context).textTheme.headline6),
+        actions:[
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage()));
+            },
+          )
+        ]
       ),
       body: Column(
         children: [
