@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_ventures/pages/recipedetails.dart';
 
 import '../main.dart';
 
@@ -33,7 +34,12 @@ class _RecipeListState extends State<RecipeList> {
       Column(
         children: [
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RecipeDetails()),
+              );
+            },
             child: Align(
               alignment: Alignment.center,
               child: Text(
@@ -43,7 +49,12 @@ class _RecipeListState extends State<RecipeList> {
             ),
           ),
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RecipeDetails()),
+              );
+            },
             child: Align(
               alignment: Alignment.center,
               child: Text(
