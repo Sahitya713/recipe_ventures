@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:recipe_ventures/controllers/authenticationController.dart';
@@ -10,34 +11,34 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:recipe_ventures/pages/navBar.dart';
 import 'package:recipe_ventures/widget/signinwidget.dart';
 import 'package:recipe_ventures/components/loading.dart';
+import 'package:recipe_ventures/utils/globals.dart' as globals;
 
 class LoginPage extends StatelessWidget {
   @override
-
   Widget build(BuildContext context) => Scaffold(
-    body: ChangeNotifierProvider(
-      create: (context) => LoginController(),
-      child: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot){
-          final provider = Provider.of<LoginController>(context);
+        body: ChangeNotifierProvider(
+          create: (context) => LoginController(),
+          child: StreamBuilder(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              final provider = Provider.of<LoginController>(context);
 
-          if (provider.isSigningIn){
-            return Loading();
-          }
-          else if (snapshot.hasData){
-            print('Snapshot has data');
-            return Navbar();
-          }
-          else{
-            print ('Snapshot has no data');
-            return SignInWidget();
-          }
-        },
-      ),
-    ),
-  );
+              if (provider.isSigningIn) {
+                return Loading();
+              } else if (snapshot.hasData) {
+                // print('Snapshot has data');
+                // return Navbar();
 
+                globals.currUserId = snapshot.data.uid;
+                return Navbar();
+              } else {
+                // print ('Snapshot has no data');
+                return SignInWidget();
+              }
+            },
+          ),
+        ),
+      );
 }
 
 // we will be creating a widget for text field
@@ -68,5 +69,3 @@ class LoginPage extends StatelessWidget {
     ],
   );
 }*/
-
-

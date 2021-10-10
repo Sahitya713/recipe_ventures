@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:recipe_ventures/controllers/storeController.dart';
+import 'package:recipe_ventures/data/ingredient.dart';
+import 'package:recipe_ventures/utils/globals.dart';
 
 import '../main.dart';
 
-class Ingredient extends StatefulWidget{
+class IngredientComponent extends StatefulWidget {
   String ingredientName;
   String chosenQuantity;
   String chosenUnit;
@@ -12,7 +15,7 @@ class Ingredient extends StatefulWidget{
   bool checkboxVisibility;
   bool selectAll;
 
-  Ingredient({
+  IngredientComponent({
     @required this.ingredientName,
     @required this.chosenQuantity,
     @required this.chosenUnit,
@@ -22,10 +25,10 @@ class Ingredient extends StatefulWidget{
   });
 
   @override
-  _IngredientState createState() => _IngredientState();
+  _IngredientComponentState createState() => _IngredientComponentState();
 }
 
-class _IngredientState extends State<Ingredient> {
+class _IngredientComponentState extends State<IngredientComponent> {
   TextEditingController _nameController;
   TextEditingController _quantityController;
   bool _visibilityTag = true;
@@ -56,10 +59,10 @@ class _IngredientState extends State<Ingredient> {
   _setTextColor(DateTime expiryDate) {
     var now = DateTime.now();
 
-    if (int.parse(expiryDate.day.toString()) - int.parse(now.day.toString()) <= 3) {
+    if (int.parse(expiryDate.day.toString()) - int.parse(now.day.toString()) <=
+        3) {
       return Colors.red;
-    }
-    else {
+    } else {
       return Colors.black87;
     }
   }
@@ -71,8 +74,7 @@ class _IngredientState extends State<Ingredient> {
         _expiryDateVisibility = false;
         _expiredVisibility = true;
       });
-    }
-    else {
+    } else {
       setState(() {
         _expiryDateVisibility = true;
         _expiredVisibility = false;
@@ -100,6 +102,7 @@ class _IngredientState extends State<Ingredient> {
                       child: Text('ok'),
                       onPressed: () {
                         // delete ingredient from db
+
                         setState(() {
                           _visibilityTag = false;
                         });
@@ -121,20 +124,19 @@ class _IngredientState extends State<Ingredient> {
     );
     if (picked != null && picked != selectedDate) {
       setState(() {
-      selectedDate = picked;
-      _alertExpiry = selectedDate;
-      _checkExpiry(_alertExpiry);
-      _setTextColor(_alertExpiry);
-      print(_alertExpiry);
+        selectedDate = picked;
+        _alertExpiry = selectedDate;
+        _checkExpiry(_alertExpiry);
+        _setTextColor(_alertExpiry);
+        print(_alertExpiry);
       });
     }
-
   }
 
   _editNameAndExpiry(BuildContext context) {
     return showDialog(
         context: context,
-        builder: (context){
+        builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
@@ -163,7 +165,7 @@ class _IngredientState extends State<Ingredient> {
                           children: [
                             Flexible(
                               child: TextField(
-                              keyboardType: TextInputType.number,
+                                keyboardType: TextInputType.number,
                                 onChanged: (newQuantity) {
                                   setState(() {
                                     widget.chosenQuantity = newQuantity;
@@ -174,16 +176,13 @@ class _IngredientState extends State<Ingredient> {
                             ),
                             DropdownButton<String>(
                               value: widget.chosenUnit,
-                              items: <String>[
-                                'g',
-                                'kg',
-                                'ml',
-                                'l',
-                                'units'
-                              ].map<DropdownMenuItem<String>>((String qty) {
+                              items: <String>['g', 'kg', 'ml', 'l', 'units']
+                                  .map<DropdownMenuItem<String>>((String qty) {
                                 return DropdownMenuItem<String>(
                                   value: qty,
-                                  child: Text(qty, style: Theme.of(context).textTheme.caption),
+                                  child: Text(qty,
+                                      style:
+                                          Theme.of(context).textTheme.caption),
                                 );
                               }).toList(),
                               onChanged: (String unit) {
@@ -193,8 +192,7 @@ class _IngredientState extends State<Ingredient> {
                                 });
                               },
                             ),
-                          ]
-                      ),
+                          ]),
                       Divider(
                         height: 20,
                       ),
@@ -203,8 +201,12 @@ class _IngredientState extends State<Ingredient> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text('$_expiry', style: Theme.of(context).textTheme.caption),
-                            Text(DateFormat('yyyy-MM-dd').format(_alertExpiry), style: TextStyle(fontSize: 12, color: _setTextColor(_alertExpiry))),
+                            Text('$_expiry',
+                                style: Theme.of(context).textTheme.caption),
+                            Text(DateFormat('yyyy-MM-dd').format(_alertExpiry),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: _setTextColor(_alertExpiry))),
                             IconButton(
                               icon: Icon(
                                 Icons.calendar_today,
@@ -212,10 +214,8 @@ class _IngredientState extends State<Ingredient> {
                               ),
                               onPressed: () => _selectDate(context),
                             ),
-                          ]
-                      ),
-                    ]
-                ),
+                          ]),
+                    ]),
               ),
               actions: [
                 Row(
@@ -245,87 +245,106 @@ class _IngredientState extends State<Ingredient> {
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      child: Flexible(
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Visibility(
-                child: Checkbox(
-                    activeColor: Theme.of(context).primaryColor,
-                    value: widget.selectAll ? widget.selectAll : _checked,
-                    onChanged: (value) {
-                      setState(() {
-                        if (widget.selectAll) {
-                          _checked = widget.selectAll;
-                          widget.selectAll = !widget.selectAll;
-                          _checked = !_checked;
+        child: Flexible(
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            Visibility(
+              child: Checkbox(
+                  activeColor: Theme.of(context).primaryColor,
+                  value: widget.selectAll ? widget.selectAll : _checked,
+                  onChanged: (value) {
+                    setState(() {
+                      if (widget.selectAll && !value) {
+                        _checked = value;
+                        widget.selectAll = !widget.selectAll;
+                        if (selectedIngredients
+                            .contains(widget.ingredientName)) {
+                          selectedIngredients.remove(widget.ingredientName);
                         }
-                        else {
-                          _checked = !_checked;
+                      } else if (widget.selectAll && value) {
+                        _checked = value;
+                        widget.selectAll = !widget.selectAll;
+                        selectedIngredients.add(widget.ingredientName);
+                      } else if (!widget.selectAll && value) {
+                        _checked = value;
+                        selectedIngredients.add(widget.ingredientName);
+                      } else if (!widget.selectAll && !value) {
+                        _checked = value;
+                        if (selectedIngredients
+                            .contains(widget.ingredientName)) {
+                          selectedIngredients.remove(widget.ingredientName);
                         }
-                      });
-                    }),
-                visible: widget.checkboxVisibility,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                height: MediaQuery.of(context).size.width * 0.15,
-                padding: EdgeInsets.all(10),
-                child: Flexible(
-                  child: Column(
+                      }
+                    });
+                  }),
+              visible: widget.checkboxVisibility,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.5,
+              height: MediaQuery.of(context).size.width * 0.15,
+              padding: EdgeInsets.all(10),
+              child: Flexible(
+                child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Flexible(
-                        child: Text(widget.ingredientName, style: TextStyle(fontSize: 18, color: _setTextColor(widget.expiryDate))),
+                        child: Text(widget.ingredientName,
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: _setTextColor(widget.expiryDate))),
                       ),
                       Padding(padding: EdgeInsets.all(2)),
                       Visibility(
-                          child: Row(
-                              children: [
-                                Flexible(
-                                    child: Text(_expiry, style: Theme.of(context).textTheme.caption),
-                                ),
-                                Flexible(
-                                  child: Text(DateFormat('yyyy-MM-dd').format(widget.expiryDate), style: TextStyle(fontSize: 12, color: _setTextColor(widget.expiryDate))),
-                                ),
-                              ]
+                        child: Row(children: [
+                          Flexible(
+                            child: Text(_expiry,
+                                style: Theme.of(context).textTheme.caption),
                           ),
-                          visible: _expiryDateVisibility,
-                        ),
+                          Flexible(
+                            child: Text(
+                                DateFormat('yyyy-MM-dd')
+                                    .format(widget.expiryDate),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: _setTextColor(widget.expiryDate))),
+                          ),
+                        ]),
+                        visible: _expiryDateVisibility,
+                      ),
                       Visibility(
-                        child: Text("Expired", style: TextStyle(fontSize: 12, color: Colors.red),
+                        child: Text(
+                          "Expired",
+                          style: TextStyle(fontSize: 12, color: Colors.red),
                         ),
                         visible: _expiredVisibility,
                       ),
-                    ]
-                  ),
-                ),
+                    ]),
               ),
-              Text(widget.chosenQuantity, style: Theme.of(context).textTheme.bodyText2),
-              Text(widget.chosenUnit, style: Theme.of(context).textTheme.bodyText2),
-              IconButton(
+            ),
+            Text(widget.chosenQuantity,
+                style: Theme.of(context).textTheme.bodyText2),
+            Text(widget.chosenUnit,
+                style: Theme.of(context).textTheme.bodyText2),
+            IconButton(
+              icon: Icon(
+                Icons.edit,
+                color: Theme.of(context).accentColor,
+              ),
+              onPressed: () {
+                _editNameAndExpiry(context);
+              },
+            ),
+            IconButton(
                 icon: Icon(
-                  Icons.edit,
+                  Icons.delete,
                   color: Theme.of(context).accentColor,
                 ),
                 onPressed: () {
-                  _editNameAndExpiry(context);
-                },
-              ),
-              IconButton(
-                  icon: Icon(
-                    Icons.delete,
-                    color: Theme.of(context).accentColor,
-                  ),
-                  onPressed: () {
-                    _deleteConfirmation(context);
-                  }
-              ),
-            ]
+                  _deleteConfirmation(context);
+                }),
+          ]),
         ),
-      ),
-    visible: _visibilityTag
-    );
+        visible: _visibilityTag);
   }
 }

@@ -9,8 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    if (FirebaseAuth.instance.currentUser != null)
-      LoginController().signOut();
+    if (FirebaseAuth.instance.currentUser != null) LoginController().signOut();
     Size size = MediaQuery.of(context).size;
     // This size provides us total height and width of our screen
     return Scaffold(
@@ -26,7 +25,8 @@ class WelcomePage extends StatelessWidget {
               Column(
                 children: <Widget>[
                   Text("Welcome to Recipe Ventures",
-                      style: Theme.of(context).textTheme.headline3, textAlign: TextAlign.center),
+                      style: Theme.of(context).textTheme.headline3,
+                      textAlign: TextAlign.center),
                   SizedBox(height: 10),
                 ],
               ),
@@ -34,7 +34,8 @@ class WelcomePage extends StatelessWidget {
                 height: size.height / 3,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage("assets/images/Recipe Ventures.png"))),
+                        image:
+                            AssetImage("assets/images/Recipe Ventures.png"))),
               ),
               Column(
                 children: <Widget>[
@@ -43,8 +44,8 @@ class WelcomePage extends StatelessWidget {
                       height: 60,
                       onPressed: () {
                         print("Login Button Pressed");
-                        Navigator.pushNamed(context,'/Login');
-                       /* Navigator.push(
+                        Navigator.pushNamed(context, '/Login');
+                        /* Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => LoginPage()));*/
@@ -62,8 +63,15 @@ class WelcomePage extends StatelessWidget {
                       minWidth: double.infinity,
                       height: 60,
                       onPressed: () {
+                        // var now = DateTime.now();
+                        // Map<String, dynamic> x = new Map();
+                        // x["name"] = "egg";
+                        // x["expiryDate"] = now;
+                        // StoreController().addIngredients(
+                        //     [x], "wHUYMSwrhBWajUyw8QqLbvfEuIr1");
+
                         print("Signup Button Pressed");
-                        Navigator.pushNamed(context,'/Signup');
+                        Navigator.pushNamed(context, '/Signup');
                         /*Navigator.push(
                             context,
                             MaterialPageRoute(
