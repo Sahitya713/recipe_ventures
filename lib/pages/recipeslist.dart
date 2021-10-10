@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_ventures/components/recipeComponent.dart';
+import 'package:recipe_ventures/controllers/recipeController.dart';
 import 'package:recipe_ventures/pages/recipedetails.dart';
+import 'package:recipe_ventures/utils/globals.dart' as globals;
+
 
 import '../main.dart';
 
@@ -9,7 +13,8 @@ class RecipeList extends StatefulWidget {
 }
 
 class _RecipeListState extends State<RecipeList> {
-
+  RecipeController rc = RecipeController();
+  var result;
 
   @override
   void initState() {
@@ -21,10 +26,29 @@ class _RecipeListState extends State<RecipeList> {
     super.dispose();
   }
 
+  Widget _buildRecipesList(List<String> ingredientList)  {
+    return FutureBuilder(
+        future: rc.generateRecipes(ingredientList),
+        builder: (context, snapshot) {
+          return ListView.builder(
+              shrinkWrap: true,
+              itemCount: ingredientList.length,
+              itemBuilder: (BuildContext context, int index) {
+            return  RecipeComponent(
+                recipeID: snapshot.data[index]['id'],
+                recipeName: snapshot.data[index]['title']
+            );
+          });
+        }
+        );
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
-
+  print(globals.selectedIngredients);
+  rc.generateRecipes(globals.selectedIngredients);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -33,36 +57,7 @@ class _RecipeListState extends State<RecipeList> {
       body: // can use a list view builder to iterate and display
       Column(
         children: [
-          MaterialButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => RecipeDetails()),
-              );
-            },
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Recipe 1',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-          ),
-          MaterialButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => RecipeDetails()),
-              );
-            },
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Recipe 2',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-          ),
+          _buildRecipesList(globals.selectedIngredients),
         ],
       ),
     );

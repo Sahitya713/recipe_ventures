@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 
 class RecipeDetails extends StatefulWidget{
+  int recipeID;
+
+  RecipeDetails({
+    @required this.recipeID,
+  });
+
   @override
   _RecipeDetailsState createState() => _RecipeDetailsState();
 }

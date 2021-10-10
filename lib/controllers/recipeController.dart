@@ -15,6 +15,7 @@ class RecipeController {
     var response = await http.get(url);
     if (response.statusCode == 200) {
       String data = response.body;
+      // print(data);
       var res = jsonDecode(data);
       print(res);
       return res;

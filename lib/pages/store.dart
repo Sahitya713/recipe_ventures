@@ -28,8 +28,12 @@ class _StoreState extends State<Store> {
   String _ingredientName;
   String _quantity;
   StoreController sc = StoreController();
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  String userID = globals.currUserId;
+  List<String> ingredients = [];
+
+
+
+
+
 
   @override
   void initState() {
@@ -47,10 +51,11 @@ class _StoreState extends State<Store> {
 
   _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now().add(Duration(hours: 1)),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2101));
+      context: context,
+      initialDate: DateTime.now().add(Duration(hours: 1)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101)
+    );
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
@@ -61,7 +66,7 @@ class _StoreState extends State<Store> {
   _addIngredient(BuildContext context) {
     return showDialog(
         context: context,
-        builder: (context) {
+        builder: (context){
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
@@ -88,8 +93,7 @@ class _StoreState extends State<Store> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text('Expires on $_expiry',
-                                style: Theme.of(context).textTheme.caption),
+                            Text('Expires on $_expiry', style: Theme.of(context).textTheme.caption),
                             IconButton(
                               icon: Icon(
                                 Icons.calendar_today,
@@ -97,7 +101,8 @@ class _StoreState extends State<Store> {
                               ),
                               onPressed: () => _selectDate(context),
                             ),
-                          ]),
+                          ]
+                      ),
                       Text("Please input quantity of ingredient:",
                           style: Theme.of(context).textTheme.bodyText2),
                       TextField(
@@ -128,9 +133,7 @@ class _StoreState extends State<Store> {
                               ].map<DropdownMenuItem<String>>((String qty) {
                                 return DropdownMenuItem<String>(
                                   value: qty,
-                                  child: Text(qty,
-                                      style:
-                                          Theme.of(context).textTheme.caption),
+                                  child: Text(qty, style: Theme.of(context).textTheme.caption),
                                 );
                               }).toList(),
                               onChanged: (String unit) {
@@ -139,8 +142,10 @@ class _StoreState extends State<Store> {
                                 });
                               },
                             ),
-                          ]),
-                    ]),
+                          ]
+                      ),
+                    ]
+                ),
               ),
               actions: [
                 Row(
@@ -154,14 +159,10 @@ class _StoreState extends State<Store> {
                               'name': _ingredientName,
                               'quantity': int.parse(_quantity),
                               'metric': _chosenUnit,
-                              'expiryDate':
-                                  DateFormat("yyyy-MM-dd").parse(_expiry),
+                              'expiryDate': selectedDate,
                             }
                           ];
-                          print("adding ingrdient");
-                          print(userID);
-                          sc.addIngredients(ingredientsToAdd,
-                              userID); // create ingredient obj then add
+                          sc.addIngredients(ingredientsToAdd, globals.currUserId); // create ingredient obj then add
                           _nameController.clear();
                           _quantityController.clear();
                           _expiry = '-';
@@ -176,40 +177,37 @@ class _StoreState extends State<Store> {
         });
   }
 
-  Widget _buildIngredientList(
-      List<dynamic> ingredientList, checkboxVisible, selectAll) {
-    print("inside build ingredient list");
-    print(ingredientList.length);
+  Widget _buildIngredientList(List<dynamic> ingredientList, checkboxVisible, selectAll) {
+    // print("inside build ingredient list");
+    // print(ingredientList.length);
     return ListView.builder(
-        itemCount: ingredientList.length,
-        itemBuilder: (BuildContext context, int index) {
-          Ingredient ingredientObj = ingredientList[index];
-          return IngredientComponent(
-              ingredientName: ingredientObj.name,
-              chosenQuantity: ingredientObj.quantity.toString(),
-              chosenUnit: ingredientObj.metric,
-              expiryDate: ingredientObj.expiryDate,
-              checkboxVisibility: checkboxVisible,
-              selectAll: selectAll);
-        });
+        shrinkWrap: true,
+          itemCount: ingredientList.length,
+          itemBuilder: (BuildContext context, int index) {
+            Ingredient ingredientObj = ingredientList[index];
+            if (!ingredients.contains(ingredientObj.name)) {
+              ingredients.add(ingredientObj.name);
+            }
+            return IngredientComponent(
+                ingredientName: ingredientObj.name,
+                chosenQuantity: ingredientObj.quantity.toString(),
+                chosenUnit: ingredientObj.metric,
+                expiryDate: ingredientObj.expiryDate,
+                checkboxVisibility: checkboxVisible,
+                selectAll: selectAll
+                );
+          }
+      );
   }
 
   @override
   Widget build(BuildContext context) {
-    print(userID);
-    return StreamBuilder(
-        stream: auth.authStateChanges(),
-        builder: (context, AsyncSnapshot<User> user) {
-          if (user.hasData) {
-            // print(user.data.uid);
-            return StreamBuilder<List<dynamic>>(
-                stream: Ingredient.getStore(userID),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<dynamic>> snapshot) {
+    return StreamBuilder<List<dynamic>>(
+                stream: Ingredient.getStore(globals.currUserId),
+                builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
                   if (snapshot.hasData) {
-                    print("printing snapshot.data");
-                    print(snapshot.data.length);
-                    print(userID);
+                    // print("printing snapshot.data");
+                    // print(snapshot.data.length);
                     return Scaffold(
                       appBar: AppBar(
                           leading: Visibility(
@@ -227,8 +225,7 @@ class _StoreState extends State<Store> {
                             visible: _checkboxVisible,
                           ),
                           centerTitle: true,
-                          title: Text('Store',
-                              style: Theme.of(context).textTheme.headline6),
+                          title: Text('Store', style: Theme.of(context).textTheme.headline6),
                           actions: [
                             Visibility(
                               child: MaterialButton(
@@ -236,8 +233,7 @@ class _StoreState extends State<Store> {
                                   alignment: Alignment.center,
                                   child: Text(
                                     'Cancel',
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                    style: Theme.of(context).textTheme.bodyText2,
                                   ),
                                 ),
                                 onPressed: () {
@@ -249,9 +245,10 @@ class _StoreState extends State<Store> {
                               ),
                               visible: _checkboxVisible,
                             ),
-                          ]),
+                          ]
+                      ),
                       body: // can use a list view builder to iterate and display
-                          Column(
+                      Column(
                         children: [
                           Expanded(
                             child: _buildIngredientList(
@@ -264,13 +261,14 @@ class _StoreState extends State<Store> {
                                 onPressed: () {
                                   setState(() {
                                     if (recipeGetter != 'Generate Recipes') {
-                                      // generate recipes
+                                      if(_selectAll) {
+                                        globals.selectedIngredients = ingredients;
+                                      }
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   RecipeList()));
                                     }
-                                    globals.selectedIngredients = [];
                                     _checkboxVisible = true;
                                     recipeGetter = 'Get Recipes';
                                   });
@@ -292,7 +290,8 @@ class _StoreState extends State<Store> {
                         backgroundColor: Theme.of(context).primaryColor,
                       ),
                     );
-                  } else {
+                  }
+                  else {
                     return Scaffold(
                       appBar: AppBar(
                           leading: Visibility(
@@ -310,8 +309,7 @@ class _StoreState extends State<Store> {
                             visible: _checkboxVisible,
                           ),
                           centerTitle: true,
-                          title: Text('Store',
-                              style: Theme.of(context).textTheme.headline6),
+                          title: Text('Store', style: Theme.of(context).textTheme.headline6),
                           actions: [
                             Visibility(
                               child: MaterialButton(
@@ -319,8 +317,7 @@ class _StoreState extends State<Store> {
                                   alignment: Alignment.center,
                                   child: Text(
                                     'Cancel',
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                    style: Theme.of(context).textTheme.bodyText2,
                                   ),
                                 ),
                                 onPressed: () {
@@ -332,10 +329,13 @@ class _StoreState extends State<Store> {
                               ),
                               visible: _checkboxVisible,
                             ),
-                          ]),
+                          ]
+                      ),
                       body: // can use a list view builder to iterate and display
-                          Column(
-                        children: [],
+                      Column(
+                        children: [
+
+                        ],
                       ),
                       floatingActionButton: FloatingActionButton(
                         onPressed: () {
@@ -346,59 +346,9 @@ class _StoreState extends State<Store> {
                       ),
                     );
                   }
-                });
+                }
+            );
           }
-          return Scaffold(
-            appBar: AppBar(
-                leading: Visibility(
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.select_all,
-                      color: Theme.of(context).accentColor,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _selectAll = !_selectAll;
-                      });
-                    },
-                  ),
-                  visible: _checkboxVisible,
-                ),
-                centerTitle: true,
-                title:
-                    Text('Store', style: Theme.of(context).textTheme.headline6),
-                actions: [
-                  Visibility(
-                    child: MaterialButton(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Cancel',
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _checkboxVisible = false;
-                          recipeGetter = 'Generate Recipes';
-                        });
-                      },
-                    ),
-                    visible: _checkboxVisible,
-                  ),
-                ]),
-            body: // can use a list view builder to iterate and display
-                Column(
-              children: [Center(child: CircularProgressIndicator())],
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                _addIngredient(context);
-              },
-              child: const Icon(Icons.add),
-              backgroundColor: Theme.of(context).primaryColor,
-            ),
-          );
-        });
+
   }
-}
+
