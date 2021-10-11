@@ -189,6 +189,7 @@ class _StoreState extends State<Store> {
               ingredients.add(ingredientObj.name);
             }
             return IngredientComponent(
+              ingredientID: ingredientObj.ingredientID,
                 ingredientName: ingredientObj.name,
                 chosenQuantity: ingredientObj.quantity.toString(),
                 chosenUnit: ingredientObj.metric,
@@ -206,8 +207,7 @@ class _StoreState extends State<Store> {
                 stream: Ingredient.getStore(globals.currUserId),
                 builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
                   if (snapshot.hasData) {
-                    // print("printing snapshot.data");
-                    // print(snapshot.data.length);
+                    // print(snapshot.data[0].name);
                     return Scaffold(
                       appBar: AppBar(
                           leading: Visibility(

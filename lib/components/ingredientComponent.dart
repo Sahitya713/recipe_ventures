@@ -8,6 +8,7 @@ import 'package:recipe_ventures/utils/globals.dart' as globals;
 import '../main.dart';
 
 class IngredientComponent extends StatefulWidget {
+  String ingredientID;
   String ingredientName;
   String chosenQuantity;
   String chosenUnit;
@@ -16,6 +17,7 @@ class IngredientComponent extends StatefulWidget {
   bool selectAll;
 
   IngredientComponent({
+    @required this.ingredientID,
     @required this.ingredientName,
     @required this.chosenQuantity,
     @required this.chosenUnit,
@@ -38,6 +40,7 @@ class _IngredientComponentState extends State<IngredientComponent> {
   bool _expiredVisibility = false;
   bool _expiryDateVisibility = true;
   bool _checked = false;
+  StoreController sc = StoreController();
 
   @override
   void initState() {
@@ -102,7 +105,7 @@ class _IngredientComponentState extends State<IngredientComponent> {
                   MaterialButton(
                       child: Text('ok'),
                       onPressed: () {
-                        // delete ingredient from db
+                        sc.deleteIngredient(widget.ingredientID);
                         setState(() {
                           _visibilityTag = false;
                         });
@@ -227,7 +230,7 @@ class _IngredientComponentState extends State<IngredientComponent> {
                     MaterialButton(
                         child: Text('ok'),
                         onPressed: () {
-                          // save new ingredient name & expiry date to db
+                          sc.updateIngredient(ingredientId: widget.ingredientID);
                           _nameController.clear();
                           _quantityController.clear();
                           setState(() {

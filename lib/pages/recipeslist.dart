@@ -57,7 +57,9 @@ class _RecipeListState extends State<RecipeList> {
       body: // can use a list view builder to iterate and display
       Column(
         children: [
-          _buildRecipesList(globals.selectedIngredients),
+          Expanded(
+            child: _buildRecipesList(globals.selectedIngredients),
+          ),
         ],
       ),
     );
