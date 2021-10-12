@@ -30,17 +30,21 @@ class _RecipeListState extends State<RecipeList> {
     return FutureBuilder(
         future: rc.generateRecipes(ingredientList),
         builder: (context, snapshot) {
-          return ListView.builder(
-              shrinkWrap: true,
-              itemCount: ingredientList.length,
-              itemBuilder: (BuildContext context, int index) {
-            return  RecipeComponent(
-                recipeID: snapshot.data[index]['id'],
-                recipeName: snapshot.data[index]['title']
-            );
-          });
-        }
-        );
+          if (snapshot.hasData) {
+            return ListView.builder(
+                shrinkWrap: true,
+                itemCount: ingredientList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return  RecipeComponent(
+                      recipeID: snapshot.data[index]['id'],
+                      recipeName: snapshot.data[index]['title']
+                  );
+                });
+          }
+          else {
+            return Center(child: CircularProgressIndicator());
+          }
+        });
 
   }
 

@@ -271,6 +271,7 @@ class _IngredientComponentState extends State<IngredientComponent> {
                             if(value){
                               if (!globals.selectedIngredients.contains(widget.ingredientName)) {
                                 globals.selectedIngredients.add(widget.ingredientName);
+                                print(globals.selectedIngredients);
                               }
                             }
                             else{
