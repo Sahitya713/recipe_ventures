@@ -33,7 +33,7 @@ class _RecipeListState extends State<RecipeList> {
           if (snapshot.hasData) {
             return ListView.builder(
                 shrinkWrap: true,
-                itemCount: ingredientList.length,
+                itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   return  RecipeComponent(
                       recipeID: snapshot.data[index]['id'],
