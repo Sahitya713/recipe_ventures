@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:recipe_ventures/pages/homepage.dart';
+import 'package:open_mail_app/open_mail_app.dart';
 
 
 class settingsPage extends StatefulWidget {
@@ -11,6 +12,26 @@ class settingsPage extends StatefulWidget {
 
 class _settingsPageState extends State<settingsPage> {
   double rating = 0;
+
+  void showNoMailAppsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Open Mail App", style: Theme.of(context).textTheme.headline6),
+          content: Text("No mail apps installed", style: Theme.of(context).textTheme.bodyText1),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text("OK", style: Theme.of(context).textTheme.bodyText1),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +65,39 @@ class _settingsPageState extends State<settingsPage> {
                       color: Colors.orangeAccent,
                     ),
                     SizedBox(width: 10),
-                    Text("Send Feedback", style: Theme
-                        .of(context)
-                        .textTheme
-                        .headline6)
+                    OutlinedButton(
+                      child: Text("Send Feedback", style: Theme.of(context).textTheme.headline6),
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          side: BorderSide(width: 3.0, color: Colors.white),
+                        ),
+                      onPressed: () async {
+                        EmailContent email = EmailContent(
+                          to: [
+                            'recipe_ventures@gmail.com',
+                          ],
+                          subject: 'Feedback for Recipe Ventures',
+                        );
+
+                        OpenMailAppResult result =
+                        await OpenMailApp.composeNewEmailInMailApp(
+                            nativePickerTitle: 'Select email app to compose',
+                            emailContent: email);
+                        if (!result.didOpen && !result.canOpen) {
+                          showNoMailAppsDialog(context);
+                        } else if (!result.didOpen && result.canOpen) {
+                          showDialog(
+                            context: context,
+                            builder: (_) => MailAppPickerDialog(
+                              mailApps: result.options,
+                              emailContent: email,
+                            ),
+                          );
+                        }
+                      },
+                    )
                   ],
                 ),
                 //Divider(height: 20, thickness: 1),
