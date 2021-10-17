@@ -22,6 +22,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   File image;
+  String _imageCaptureChoice;
 
   Future pickImageGallery() async {
     try {
@@ -93,11 +94,17 @@ class _HomepageState extends State<Homepage> {
               menuItems: [
                 FocusedMenuItem(
                   title: Text('Take a picture'),
-                  onPressed: () => pickImageCamera(),
+                  onPressed: () => {
+                      pickImageCamera(),
+                      _imageCaptureChoice = 'image'
+                    },
                 ),
                 FocusedMenuItem(
                   title: Text('Upload from gallery'),
-                  onPressed: () => pickImageGallery(),
+                  onPressed: () => {
+                    pickImageGallery(),
+                    _imageCaptureChoice = 'gallery'
+                  }
                 ),
               ],
               menuWidth: MediaQuery.of(context).size.width - 50,
@@ -145,16 +152,14 @@ class _HomepageState extends State<Homepage> {
               ? Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
                         onPressed: () {
                           // Get list of ingredient
                           List ingredients = [
-                            'apple',
-                            'pear',
-                            'orange',
-                            'Change the widget'
+                            'egg',
+                            'carrot'
                           ];
                           Navigator.push(
                             context,
@@ -172,6 +177,11 @@ class _HomepageState extends State<Homepage> {
                       ),
                       ElevatedButton(
                         onPressed: () {
+                          if (_imageCaptureChoice == 'gallery'){
+                            pickImageGallery();
+                          } else{
+                            pickImageCamera();
+                          }
                           print('retake image');
                         },
                         child: Text('Retake Image'),

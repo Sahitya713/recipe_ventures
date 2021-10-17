@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_ventures/pages/store.dart';
+import '../components/ingredientComponent.dart';
 import 'dart:io';
 
 class IngredientConfirmationPage extends StatefulWidget {
@@ -14,11 +15,14 @@ class IngredientConfirmationPage extends StatefulWidget {
 
 class _IngredientConfirmationPageState
     extends State<IngredientConfirmationPage> {
+
   List<Widget> _generateList(ingredientList) {
     List<Widget> widgetList = [];
     int i;
     for (i = 0; i < ingredientList.length; i++) {
-      widgetList.add(Text(ingredientList[i]));
+      widgetList.add(
+        IngredientComponent(ingredientID: "", ingredientName: ingredientList[i], chosenQuantity: "1", chosenUnit: "units", expiryDate: DateTime.now().add(const Duration(days: 7)) , checkboxVisibility: false, selectAll: false)
+      );
     }
     return widgetList;
   }
