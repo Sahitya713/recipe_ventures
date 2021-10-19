@@ -1,6 +1,6 @@
 library recipe_ventures.globals;
 
-import 'package:recipe_ventures/data/appUser.dart';
-
-String currUserId;
+// import 'package:recipe_ventures/data/appUser.dart';
+//
+// String currUserId;
 List<String> selectedIngredients = [];

@@ -45,8 +45,8 @@ class _IngredientComponentState extends State<IngredientComponent> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
-    _quantityController = TextEditingController();
+    _nameController = TextEditingController(text: widget.ingredientName);
+    _quantityController = TextEditingController(text: widget.chosenQuantity);
     _alertExpiry = widget.expiryDate;
     _checkExpiry(widget.expiryDate);
     _setTextColor(widget.expiryDate);
@@ -62,10 +62,10 @@ class _IngredientComponentState extends State<IngredientComponent> {
   _setTextColor(DateTime expiryDate) {
     var now = DateTime.now();
 
-    if (int.parse(expiryDate.day.toString()) - int.parse(now.day.toString()) <= 3) {
+    if (int.parse(expiryDate.day.toString()) - int.parse(now.day.toString()) <=
+        3) {
       return Colors.red;
-    }
-    else {
+    } else {
       return Colors.black87;
     }
   }
@@ -77,8 +77,7 @@ class _IngredientComponentState extends State<IngredientComponent> {
         _expiryDateVisibility = false;
         _expiredVisibility = true;
       });
-    }
-    else {
+    } else {
       setState(() {
         _expiryDateVisibility = true;
         _expiredVisibility = false;
@@ -106,9 +105,9 @@ class _IngredientComponentState extends State<IngredientComponent> {
                       child: Text('ok'),
                       onPressed: () {
                         sc.deleteIngredient(widget.ingredientID);
-                        setState(() {
-                          _visibilityTag = false;
-                        });
+                        // setState(() {
+                        //   _visibilityTag = false;
+                        // });
                         Navigator.pop(context);
                       }),
                 ],
@@ -127,20 +126,19 @@ class _IngredientComponentState extends State<IngredientComponent> {
     );
     if (picked != null && picked != selectedDate) {
       setState(() {
-      selectedDate = picked;
-      _alertExpiry = selectedDate;
-      _checkExpiry(_alertExpiry);
-      _setTextColor(_alertExpiry);
-      print(_alertExpiry);
+        selectedDate = picked;
+        _alertExpiry = selectedDate;
+        _checkExpiry(_alertExpiry);
+        _setTextColor(_alertExpiry);
+        print(_alertExpiry);
       });
     }
-
   }
 
   _editNameAndExpiry(BuildContext context) {
     return showDialog(
         context: context,
-        builder: (context){
+        builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
@@ -152,13 +150,12 @@ class _IngredientComponentState extends State<IngredientComponent> {
                       Text("Please input ingredient name:",
                           style: Theme.of(context).textTheme.bodyText2),
                       TextField(
-                        onChanged: (newName) {
-                          setState(() {
-                            widget.ingredientName = newName;
-                          });
-                        },
-                        controller: _nameController,
-                      ),
+                          onChanged: (newName) {
+                            setState(() {
+                              widget.ingredientName = newName;
+                            });
+                          },
+                          controller: _nameController),
                       Divider(
                         height: 20,
                       ),
@@ -169,7 +166,7 @@ class _IngredientComponentState extends State<IngredientComponent> {
                           children: [
                             Flexible(
                               child: TextField(
-                              keyboardType: TextInputType.number,
+                                keyboardType: TextInputType.number,
                                 onChanged: (newQuantity) {
                                   setState(() {
                                     widget.chosenQuantity = newQuantity;
@@ -180,16 +177,13 @@ class _IngredientComponentState extends State<IngredientComponent> {
                             ),
                             DropdownButton<String>(
                               value: widget.chosenUnit,
-                              items: <String>[
-                                'g',
-                                'kg',
-                                'ml',
-                                'l',
-                                'units'
-                              ].map<DropdownMenuItem<String>>((String qty) {
+                              items: <String>['g', 'kg', 'ml', 'l', 'units']
+                                  .map<DropdownMenuItem<String>>((String qty) {
                                 return DropdownMenuItem<String>(
                                   value: qty,
-                                  child: Text(qty, style: Theme.of(context).textTheme.caption),
+                                  child: Text(qty,
+                                      style:
+                                          Theme.of(context).textTheme.caption),
                                 );
                               }).toList(),
                               onChanged: (String unit) {
@@ -199,8 +193,7 @@ class _IngredientComponentState extends State<IngredientComponent> {
                                 });
                               },
                             ),
-                          ]
-                      ),
+                          ]),
                       Divider(
                         height: 20,
                       ),
@@ -209,8 +202,12 @@ class _IngredientComponentState extends State<IngredientComponent> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text('$_expiry', style: Theme.of(context).textTheme.caption),
-                            Text(DateFormat('yyyy-MM-dd').format(_alertExpiry), style: TextStyle(fontSize: 12, color: _setTextColor(_alertExpiry))),
+                            Text('$_expiry',
+                                style: Theme.of(context).textTheme.caption),
+                            Text(DateFormat('yyyy-MM-dd').format(_alertExpiry),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: _setTextColor(_alertExpiry))),
                             IconButton(
                               icon: Icon(
                                 Icons.calendar_today,
@@ -218,10 +215,8 @@ class _IngredientComponentState extends State<IngredientComponent> {
                               ),
                               onPressed: () => _selectDate(context),
                             ),
-                          ]
-                      ),
-                    ]
-                ),
+                          ]),
+                    ]),
               ),
               actions: [
                 Row(
@@ -230,7 +225,14 @@ class _IngredientComponentState extends State<IngredientComponent> {
                     MaterialButton(
                         child: Text('ok'),
                         onPressed: () {
-                          sc.updateIngredient(ingredientId: widget.ingredientID);
+                          sc.updateIngredient(
+                              ingredientId: widget.ingredientID,
+                              ingredientDetails: {
+                                "name": _nameController.text,
+                                "quantity": int.parse(_quantityController.text),
+                                "expiryDate": _alertExpiry,
+                                "metric": widget.chosenUnit
+                              });
                           _nameController.clear();
                           _quantityController.clear();
                           setState(() {
@@ -251,10 +253,7 @@ class _IngredientComponentState extends State<IngredientComponent> {
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      child:
-      Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
           Flexible(
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -264,19 +263,22 @@ class _IngredientComponentState extends State<IngredientComponent> {
                         activeColor: Theme.of(context).primaryColor,
                         value: widget.selectAll ? widget.selectAll : _checked,
                         onChanged: (value) {
-                          if(value) {
+                          if (value) {
                             _checked = true;
                           }
                           setState(() {
-                            if(value){
-                              if (!globals.selectedIngredients.contains(widget.ingredientName)) {
-                                globals.selectedIngredients.add(widget.ingredientName);
+                            if (value) {
+                              if (!globals.selectedIngredients
+                                  .contains(widget.ingredientName)) {
+                                globals.selectedIngredients
+                                    .add(widget.ingredientName);
                                 print(globals.selectedIngredients);
                               }
-                            }
-                            else{
-                              if (globals.selectedIngredients.contains(widget.ingredientName)) {
-                                globals.selectedIngredients.remove(widget.ingredientName);
+                            } else {
+                              if (globals.selectedIngredients
+                                  .contains(widget.ingredientName)) {
+                                globals.selectedIngredients
+                                    .remove(widget.ingredientName);
                               }
                             }
                           });
@@ -288,36 +290,47 @@ class _IngredientComponentState extends State<IngredientComponent> {
                     height: MediaQuery.of(context).size.width * 0.15,
                     // padding: EdgeInsets.all(10),
                     child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              child: Text(widget.ingredientName, style: TextStyle(fontSize: 18, color: _setTextColor(widget.expiryDate))),
-                            ),
-                            Padding(padding: EdgeInsets.all(2)),
-                            Visibility(
-                              child: Row(
-                                  children: [
-                                    Flexible(
-                                      child: Text(_expiry, style: Theme.of(context).textTheme.caption),
-                                    ),
-                                    Flexible(
-                                      child: Text(DateFormat('yyyy-MM-dd').format(widget.expiryDate), style: TextStyle(fontSize: 12, color: _setTextColor(widget.expiryDate))),
-                                    ),
-                                  ]
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Text(widget.ingredientName,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: _setTextColor(widget.expiryDate))),
+                          ),
+                          Padding(padding: EdgeInsets.all(2)),
+                          Visibility(
+                            child: Row(children: [
+                              Flexible(
+                                child: Text(_expiry,
+                                    style: Theme.of(context).textTheme.caption),
                               ),
-                              visible: _expiryDateVisibility,
-                            ),
-                            Visibility(
-                              child: Text("Expired", style: TextStyle(fontSize: 12, color: Colors.red),
+                              Flexible(
+                                child: Text(
+                                    DateFormat('yyyy-MM-dd')
+                                        .format(widget.expiryDate),
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color:
+                                            _setTextColor(widget.expiryDate))),
                               ),
-                              visible: _expiredVisibility,
+                            ]),
+                            visible: _expiryDateVisibility,
+                          ),
+                          Visibility(
+                            child: Text(
+                              "Expired",
+                              style: TextStyle(fontSize: 12, color: Colors.red),
                             ),
-                          ]
-                      ),
-                    ),
-                  Text(widget.chosenQuantity, style: Theme.of(context).textTheme.bodyText2),
-                  Text(widget.chosenUnit, style: Theme.of(context).textTheme.bodyText2),
+                            visible: _expiredVisibility,
+                          ),
+                        ]),
+                  ),
+                  Text(widget.chosenQuantity,
+                      style: Theme.of(context).textTheme.bodyText2),
+                  Text(widget.chosenUnit,
+                      style: Theme.of(context).textTheme.bodyText2),
                   IconButton(
                     icon: Icon(
                       Icons.edit,
@@ -334,14 +347,10 @@ class _IngredientComponentState extends State<IngredientComponent> {
                       ),
                       onPressed: () {
                         _deleteConfirmation(context);
-                      }
-                  ),
-                ]
-            ),
+                      }),
+                ]),
           )
-        ]
-      ),
-    visible: _visibilityTag
-    );
+        ]),
+        visible: _visibilityTag);
   }
 }

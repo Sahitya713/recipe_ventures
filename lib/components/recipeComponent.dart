@@ -30,29 +30,34 @@ class _RecipeComponentState extends State<RecipeComponent> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-          child:
-          Material(  //Wrap with Material
-            shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(22.0) ),
-            elevation: 18.0,
-            color: kOrange,
-            clipBehavior: Clip.antiAlias, // Add This
-            child:
-            MaterialButton(
-              onPressed: () {
-              Navigator.push(
+      padding: EdgeInsets.fromLTRB(10.0, 8.0, 10.0, 8.0),
+      child: Material(
+        //Wrap with Material
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.0)),
+        elevation: 18.0,
+        color: kOrange,
+        clipBehavior: Clip.antiAlias, // Add This
+        child: MaterialButton(
+          onPressed: () {
+            Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RecipeDetails(recipeID: widget.recipeID)),
-              );
-            },
-            child:
-            Align(
-              alignment: Alignment.center,
-              child:
-              Text(widget.recipeName, style: Theme.of(context).textTheme.headline6,),
+              MaterialPageRoute(
+                  builder: (context) => RecipeDetails(
+                        recipeID: widget.recipeID,
+                        recipeName: widget.recipeName,
+                      )),
+            );
+          },
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              widget.recipeName,
+              style: Theme.of(context).textTheme.headline6,
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 }

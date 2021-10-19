@@ -46,11 +46,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     User currUser = FirebaseAuth.instance.currentUser;
-    globals.currUserId = (currUser == null) ? null : currUser.uid;
+
+    String uid = (currUser == null) ? null : currUser.uid;
 
     return MultiProvider(
         providers: [
-          StreamProvider<AppUser>.value(value: AppUser.getCurrentUser())
+          StreamProvider<AppUser>.value(value: AppUser.getUserFromID(uid))
         ],
         child: Consumer<ThemeNotifier>(
           builder: (context, theme, _) => MaterialApp(

@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:recipe_ventures/components/ingredientComponent.dart';
 import 'package:recipe_ventures/controllers/authenticationController.dart';
 import 'package:recipe_ventures/controllers/storeController.dart';
+import 'package:recipe_ventures/data/appUser.dart';
 import 'package:recipe_ventures/data/ingredient.dart';
 import 'package:recipe_ventures/pages/recipeslist.dart';
 import 'package:recipe_ventures/utils/globals.dart' as globals;
@@ -58,6 +60,7 @@ class _StoreState extends State<Store> {
   }
 
   _addIngredient(BuildContext context) {
+    final user = Provider.of<AppUser>(context);
     return showDialog(
         context: context,
         builder: (context) {
@@ -156,10 +159,8 @@ class _StoreState extends State<Store> {
                               'expiryDate': selectedDate,
                             }
                           ];
-                          sc.addIngredients(
-                              ingredientsToAdd,
-                              globals
-                                  .currUserId); // create ingredient obj then add
+                          sc.addIngredients(ingredientsToAdd,
+                              user.uid); // create ingredient obj then add
                           _nameController.clear();
                           _quantityController.clear();
                           _expiry = '-';
@@ -199,9 +200,12 @@ class _StoreState extends State<Store> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<AppUser>(context);
+
     return StreamBuilder<List<dynamic>>(
-        stream: Ingredient.getStore(globals.currUserId),
+        stream: Ingredient.getStore(user.uid),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          // print(snapshot.data);
           if (snapshot.hasData) {
             // print(snapshot.data[0].name);
             return Scaffold(
@@ -246,6 +250,7 @@ class _StoreState extends State<Store> {
               body: // can use a list view builder to iterate and display
                   Column(
                 children: [
+                  SizedBox(height: 10),
                   Expanded(
                     child: _buildIngredientList(
                         snapshot.data, _checkboxVisible, _selectAll),

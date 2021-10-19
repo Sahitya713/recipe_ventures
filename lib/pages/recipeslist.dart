@@ -4,7 +4,6 @@ import 'package:recipe_ventures/controllers/recipeController.dart';
 import 'package:recipe_ventures/pages/recipedetails.dart';
 import 'package:recipe_ventures/utils/globals.dart' as globals;
 
-
 import '../main.dart';
 
 class RecipeList extends StatefulWidget {
@@ -26,40 +25,39 @@ class _RecipeListState extends State<RecipeList> {
     super.dispose();
   }
 
-  Widget _buildRecipesList(List<String> ingredientList)  {
+  Widget _buildRecipesList(List<String> ingredientList) {
     return FutureBuilder(
         future: rc.generateRecipes(ingredientList),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return ListView.builder(
-                shrinkWrap: true,
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return  RecipeComponent(
-                      recipeID: snapshot.data[index]['id'],
-                      recipeName: snapshot.data[index]['title']
-                  );
-                });
-          }
-          else {
+            return Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return RecipeComponent(
+                        recipeID: snapshot.data[index]['id'],
+                        recipeName: snapshot.data[index]['title']);
+                  }),
+            );
+          } else {
             return Center(child: CircularProgressIndicator());
           }
         });
-
   }
-
 
   @override
   Widget build(BuildContext context) {
-  print(globals.selectedIngredients);
-  rc.generateRecipes(globals.selectedIngredients);
+    rc.generateRecipes(globals.selectedIngredients);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Recipes Recommendation', style: Theme.of(context).textTheme.headline6),
+        title: Text('Recipes Recommendation',
+            style: Theme.of(context).textTheme.headline6),
       ),
       body: // can use a list view builder to iterate and display
-      Column(
+          Column(
         children: [
           Expanded(
             child: _buildRecipesList(globals.selectedIngredients),
@@ -67,7 +65,5 @@ class _RecipeListState extends State<RecipeList> {
         ],
       ),
     );
-
-
   }
 }

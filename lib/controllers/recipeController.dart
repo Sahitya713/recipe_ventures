@@ -17,7 +17,7 @@ class RecipeController {
       String data = response.body;
       // print(data);
       var res = jsonDecode(data);
-      print(res);
+
       return res;
     } else {
       print(response.statusCode);
@@ -34,9 +34,9 @@ class RecipeController {
     if (response.statusCode == 200) {
       String data = response.body;
       Map<String, dynamic> res = jsonDecode(data);
+
       Recipe x = Recipe.createRecipeFromRes(res);
-      print(x);
-      print(x.ingredients);
+
       return x;
     } else {
       print(response.statusCode);

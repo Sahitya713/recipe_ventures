@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:recipe_ventures/utils/globals.dart' as globals;
 
 class Ingredient {
   final String name;
@@ -11,7 +12,12 @@ class Ingredient {
       FirebaseFirestore.instance.collection('ingredients');
 
   Ingredient(
-      {this.name, this.userID, this.expiryDate, this.quantity, this.metric, this.ingredientID});
+      {this.name,
+      this.userID,
+      this.expiryDate,
+      this.quantity,
+      this.metric,
+      this.ingredientID});
   factory Ingredient.createIngredientFromFirestore(DocumentSnapshot doc) {
     Map data = doc.data();
     // print(data);
@@ -24,13 +30,12 @@ class Ingredient {
         expiryDate:
             (data["expiryDate"] != null) ? data["expiryDate"].toDate() : "null",
         userID: data["userID"] ?? '',
-    ingredientID: doc.id);
+        ingredientID: doc.id);
     // print(x.name);
     return x;
   }
 
   static Stream<List<dynamic>> getStore(String uid) {
-    // print("inside getStore");
     return ingredients
         .where('userID', isEqualTo: uid)
         .snapshots()

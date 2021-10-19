@@ -131,8 +131,8 @@ class SignupPage extends StatelessWidget {
                               myEmailController.text.trim(),
                               myPasswordController.text.trim());
                       if (signupCode == 'Pass') {
-                        globals.currUserId =
-                            FirebaseAuth.instance.currentUser.uid;
+                        // globals.currUserId =
+                        //     FirebaseAuth.instance.currentUser.uid;
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) => Navbar()));
                       } else if (signupCode == 'WeakPassword') {
