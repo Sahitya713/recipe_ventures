@@ -23,10 +23,12 @@ class _IngredientConfirmationPageState
   List<Map<dynamic, dynamic>> ingredientsToAdd = [];
   StoreController sc = StoreController();
 
+
   List<Widget> _generateList(ingredientList) {
     List<Widget> widgetList = [];
     int i;
     globals.deletedIndex = [];
+    globals.finalIngredients = {};
     for (i = 0; i < ingredientList.length; i++) {
       widgetList.add(
         IngredientComponent(ingredientID: "", ingredientName: ingredientList[i],
@@ -38,6 +40,17 @@ class _IngredientConfirmationPageState
                             cfmIndex: i,)
       );
     }
+    print(globals.finalIngredients);
+    for (var i = 0; i < widget.ingredientList.length; i++) {
+      var ingredient = {
+        'name': widget.ingredientList[i],
+        'quantity': 1,
+        'metric': 'units',
+        'expiryDate': DateTime.now().add(const Duration(days: 7)),
+      };
+      globals.finalIngredients.add(ingredient);
+    }
+    print(globals.finalIngredients);
     return widgetList;
   }
 
@@ -79,18 +92,14 @@ class _IngredientConfirmationPageState
             child: ElevatedButton(
               onPressed: () {
                 // Send to store
+                // print("globals.finalIngredients");
+                // print(globals.finalIngredients);
                 for (var i = 0; i < widget.ingredientList.length; i++) {
                   if (!globals.deletedIndex.contains(i)){
-                    var ingredient = {
-                      'name': widget.ingredientList[i],
-                      'quantity': '1',
-                      'metric': 'units',
-                      'expiryDate': DateTime.now().add(const Duration(days: 7)),
-                    };
-                    ingredientsToAdd.add(ingredient);
+                    ingredientsToAdd.add(globals.finalIngredients.elementAt(i));
                   }
                 }
-                print(ingredientsToAdd);
+                // print(ingredientsToAdd);
                 sc.addIngredients(
                     ingredientsToAdd,
                     user.uid); // create ingredient obj then add

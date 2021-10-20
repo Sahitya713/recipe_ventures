@@ -8,6 +8,7 @@ import 'package:recipe_ventures/controllers/authenticationController.dart';
 import 'package:recipe_ventures/controllers/storeController.dart';
 import 'package:recipe_ventures/data/appUser.dart';
 import 'package:recipe_ventures/data/ingredient.dart';
+import 'package:recipe_ventures/pages/navBar.dart';
 import 'package:recipe_ventures/pages/recipeslist.dart';
 import 'package:recipe_ventures/utils/globals.dart' as globals;
 
@@ -255,8 +256,7 @@ class _StoreState extends State<Store> {
                     child: _buildIngredientList(
                         snapshot.data, _checkboxVisible, _selectAll),
                   ),
-                  Expanded(
-                    child: Align(
+                  Align(
                       alignment: FractionalOffset.bottomCenter,
                       child: OutlinedButton(
                         onPressed: () {
@@ -277,7 +277,6 @@ class _StoreState extends State<Store> {
                                 fontSize: 20, color: Color(0xFFFEA54B))),
                       ),
                     ),
-                  ),
                 ],
               ),
               floatingActionButton: FloatingActionButton(
@@ -330,7 +329,7 @@ class _StoreState extends State<Store> {
                   ]),
               body: // can use a list view builder to iterate and display
                   Column(
-                children: [Text('test')],
+                children: [Center(child: CircularProgressIndicator())],
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {

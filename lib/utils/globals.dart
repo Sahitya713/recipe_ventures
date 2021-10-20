@@ -5,3 +5,4 @@ library recipe_ventures.globals;
 // String currUserId;
 List<String> selectedIngredients = [];
 List<int> deletedIndex = [];
+Set<dynamic> finalIngredients = {};

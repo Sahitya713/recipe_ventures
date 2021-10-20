@@ -3,8 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:recipe_ventures/pages/favourites.dart';
 import 'package:recipe_ventures/pages/homepage.dart';
+import 'package:recipe_ventures/pages/ingredientConfirmationPage.dart';
 import 'package:recipe_ventures/pages/navBar.dart';
+import 'package:recipe_ventures/pages/recipedetails.dart';
+import 'package:recipe_ventures/pages/recipeslist.dart';
+import 'package:recipe_ventures/pages/store.dart';
 import 'package:recipe_ventures/utils/constants.dart';
 import 'package:recipe_ventures/theme/themeManager.dart';
 import 'package:provider/provider.dart';
@@ -41,10 +46,16 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
   @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
   Widget build(BuildContext context) {
+
     User currUser = FirebaseAuth.instance.currentUser;
 
     String uid = (currUser == null) ? null : currUser.uid;
@@ -61,9 +72,12 @@ class MyApp extends StatelessWidget {
               '/': (context) => Wrapper(),
               '/Login': (context) => LoginPage(),
               '/Signup': (context) => SignupPage(),
+              '/Favourites': (context) => Favourites(),
+              '/Store': (context) => Store(),
             },
             // MainPage(),
           ),
         ));
   }
 }
+

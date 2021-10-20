@@ -108,9 +108,9 @@ class _IngredientComponentState extends State<IngredientComponent> {
                       onPressed: () {
                         globals.deletedIndex.add(widget.cfmIndex);
                         sc.deleteIngredient(widget.ingredientID);
-                        // setState(() {
-                        //   _visibilityTag = false;
-                        // });
+                        setState(() {
+                          _visibilityTag = false;
+                        });
                         Navigator.pop(context);
                       }),
                 ],
@@ -133,7 +133,9 @@ class _IngredientComponentState extends State<IngredientComponent> {
         _alertExpiry = selectedDate;
         _checkExpiry(_alertExpiry);
         _setTextColor(_alertExpiry);
-        print(_alertExpiry);
+        if (globals.finalIngredients.length > 0) {
+          globals.finalIngredients.elementAt(widget.cfmIndex)['expiryDate'] = selectedDate;
+        }
       });
     }
   }
@@ -156,6 +158,9 @@ class _IngredientComponentState extends State<IngredientComponent> {
                           onChanged: (newName) {
                             setState(() {
                               widget.ingredientName = newName;
+                              if (globals.finalIngredients.length > 0) {
+                                globals.finalIngredients.elementAt(widget.cfmIndex)['name'] = newName;
+                              }
                             });
                           },
                           controller: _nameController),
@@ -173,6 +178,9 @@ class _IngredientComponentState extends State<IngredientComponent> {
                                 onChanged: (newQuantity) {
                                   setState(() {
                                     widget.chosenQuantity = newQuantity;
+                                    if (globals.finalIngredients.length > 0) {
+                                      globals.finalIngredients.elementAt(widget.cfmIndex)['quantity'] = int.parse(newQuantity);
+                                    }
                                   });
                                 },
                                 controller: _quantityController,
@@ -192,7 +200,9 @@ class _IngredientComponentState extends State<IngredientComponent> {
                               onChanged: (String unit) {
                                 setState(() {
                                   widget.chosenUnit = unit;
-                                  // save to db
+                                  if (globals.finalIngredients.length > 0) {
+                                    globals.finalIngredients.elementAt(widget.cfmIndex)['metric'] = unit;;
+                                  }
                                 });
                               },
                             ),
