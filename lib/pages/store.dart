@@ -60,7 +60,7 @@ class _StoreState extends State<Store> {
   }
 
   _addIngredient(BuildContext context) {
-    final user = Provider.of<AppUser>(context);
+    final user = Provider.of<AppUser>(context, listen: false);
     return showDialog(
         context: context,
         builder: (context) {
@@ -194,20 +194,22 @@ class _StoreState extends State<Store> {
               chosenUnit: ingredientObj.metric,
               expiryDate: ingredientObj.expiryDate,
               checkboxVisibility: checkboxVisible,
-              selectAll: selectAll);
+              selectAll: selectAll,
+              cfmIndex: -1,
+          );
         });
   }
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AppUser>(context);
-
+    print(user.uid);
     return StreamBuilder<List<dynamic>>(
         stream: Ingredient.getStore(user.uid),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-          // print(snapshot.data);
+          print(snapshot.data);
           if (snapshot.hasData) {
-            // print(snapshot.data[0].name);
+            print(snapshot.data[0].name);
             return Scaffold(
               appBar: AppBar(
                   leading: Visibility(
@@ -330,7 +332,7 @@ class _StoreState extends State<Store> {
                   ]),
               body: // can use a list view builder to iterate and display
                   Column(
-                children: [],
+                children: [Text('test')],
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {

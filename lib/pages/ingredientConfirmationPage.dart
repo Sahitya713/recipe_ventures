@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_ventures/controllers/storeController.dart';
 import 'package:recipe_ventures/pages/store.dart';
 import '../components/ingredientComponent.dart';
 import 'dart:io';
+import 'package:recipe_ventures/utils/globals.dart' as globals;
+import 'package:provider/provider.dart';
+import 'package:recipe_ventures/data/appUser.dart';
 
 class IngredientConfirmationPage extends StatefulWidget {
   final List ingredientList;
@@ -16,12 +20,22 @@ class IngredientConfirmationPage extends StatefulWidget {
 class _IngredientConfirmationPageState
     extends State<IngredientConfirmationPage> {
 
+  List<Map<dynamic, dynamic>> ingredientsToAdd = [];
+  StoreController sc = StoreController();
+
   List<Widget> _generateList(ingredientList) {
     List<Widget> widgetList = [];
     int i;
+    globals.deletedIndex = [];
     for (i = 0; i < ingredientList.length; i++) {
       widgetList.add(
-        IngredientComponent(ingredientID: "", ingredientName: ingredientList[i], chosenQuantity: "1", chosenUnit: "units", expiryDate: DateTime.now().add(const Duration(days: 7)) , checkboxVisibility: false, selectAll: false)
+        IngredientComponent(ingredientID: "", ingredientName: ingredientList[i],
+                            chosenQuantity: "1",
+                            chosenUnit: "units",
+                            expiryDate: DateTime.now().add(const Duration(days: 7)) ,
+                            checkboxVisibility: false,
+                            selectAll: false,
+                            cfmIndex: i,)
       );
     }
     return widgetList;
@@ -29,6 +43,7 @@ class _IngredientConfirmationPageState
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<AppUser>(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -64,7 +79,21 @@ class _IngredientConfirmationPageState
             child: ElevatedButton(
               onPressed: () {
                 // Send to store
-                print('add to store');
+                for (var i = 0; i < widget.ingredientList.length; i++) {
+                  if (!globals.deletedIndex.contains(i)){
+                    var ingredient = {
+                      'name': widget.ingredientList[i],
+                      'quantity': '1',
+                      'metric': 'units',
+                      'expiryDate': DateTime.now().add(const Duration(days: 7)),
+                    };
+                    ingredientsToAdd.add(ingredient);
+                  }
+                }
+                print(ingredientsToAdd);
+                sc.addIngredients(
+                    ingredientsToAdd,
+                    user.uid); // create ingredient obj then add
                 Navigator.push(
                             context,
                             MaterialPageRoute(

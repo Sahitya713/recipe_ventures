@@ -15,6 +15,7 @@ class IngredientComponent extends StatefulWidget {
   DateTime expiryDate;
   bool checkboxVisibility;
   bool selectAll;
+  int cfmIndex;
 
   IngredientComponent({
     @required this.ingredientID,
@@ -24,6 +25,7 @@ class IngredientComponent extends StatefulWidget {
     @required this.expiryDate,
     @required this.checkboxVisibility,
     @required this.selectAll,
+    @required this.cfmIndex,
   });
 
   @override
@@ -104,6 +106,7 @@ class _IngredientComponentState extends State<IngredientComponent> {
                   MaterialButton(
                       child: Text('ok'),
                       onPressed: () {
+                        globals.deletedIndex.add(widget.cfmIndex);
                         sc.deleteIngredient(widget.ingredientID);
                         // setState(() {
                         //   _visibilityTag = false;
