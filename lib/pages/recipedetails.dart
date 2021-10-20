@@ -62,6 +62,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                   MaterialButton(
                       child: Text('ok'),
                       onPressed: () {
+                        print("HELLLO");
                         fc.addFavourite(
                             widget.recipeID, widget.recipeName, user.uid);
                         setState(() {
