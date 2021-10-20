@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:recipe_ventures/controllers/favouritesController.dart';
 import 'package:recipe_ventures/data/recipe.dart';
 
 class RecipeController {
@@ -9,7 +11,7 @@ class RecipeController {
     var url = Uri.https('api.spoonacular.com', '/recipes/findByIngredients', {
       "apiKey": "fdaee5a82b29439689e4bda0644cc60f",
       "ingredients": ingredients.join(","),
-      // "number": "3",
+      "number": "1",
       "sort": "max-used-ingredients"
     });
     var response = await http.get(url);
@@ -17,7 +19,12 @@ class RecipeController {
       String data = response.body;
       // print(data);
       var res = jsonDecode(data);
-
+      for (var i = 0; i < res.length; i++) {
+        bool isFav = await FavouritesController()
+            .isFavourite(res[i]["id"], FirebaseAuth.instance.currentUser.uid);
+        res[i]["isFavourite"] = isFav;
+      }
+      // print(res[5]["isFavourite"]);
       return res;
     } else {
       print(response.statusCode);

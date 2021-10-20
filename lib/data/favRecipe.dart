@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FavRecipe {
-  final String recipeID;
+  final int recipeID;
   final String title;
   final String docID;
   static CollectionReference _favRecipes =

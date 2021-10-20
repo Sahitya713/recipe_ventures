@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:recipe_ventures/controllers/authenticationController.dart';
 import 'package:recipe_ventures/controllers/userController.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -133,6 +134,7 @@ class SignupPage extends StatelessWidget {
                       if (signupCode == 'Pass') {
                         // globals.currUserId =
                         //     FirebaseAuth.instance.currentUser.uid;
+                        Phoenix.rebirth(context);
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) => Navbar()));
                       } else if (signupCode == 'WeakPassword') {

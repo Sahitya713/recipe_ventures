@@ -21,10 +21,13 @@ class AppUser {
   }
 
   static Stream<AppUser> getUserFromID(docID) {
-    return _users
-        .doc(docID)
-        .snapshots()
-        .map((doc) => AppUser.createAppuserFromFirestore(doc));
+    if (docID == null) {
+      return null;
+    } else {
+      return _users.doc(docID).snapshots().map((doc) {
+        return AppUser.createAppuserFromFirestore(doc);
+      });
+    }
   }
 
   static Stream<AppUser> getCurrentUser() {

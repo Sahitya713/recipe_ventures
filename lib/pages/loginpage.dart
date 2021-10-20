@@ -26,10 +26,6 @@ class LoginPage extends StatelessWidget {
               if (provider.isSigningIn) {
                 return Loading();
               } else if (snapshot.hasData) {
-                // print('Snapshot has data');
-                // return Navbar();
-
-                // globals.currUserId = snapshot.data.uid;
                 return Navbar();
               } else {
                 // print ('Snapshot has no data');

@@ -15,8 +15,13 @@ import '../main.dart';
 class RecipeDetails extends StatefulWidget {
   int recipeID;
   String recipeName;
+  bool addedTofav;
+  // String favID;
 
-  RecipeDetails({@required this.recipeID, @required this.recipeName});
+  RecipeDetails(
+      {@required this.recipeID,
+      @required this.recipeName,
+      this.addedTofav = false});
 
   @override
   _RecipeDetailsState createState() => _RecipeDetailsState();
@@ -26,7 +31,6 @@ class _RecipeDetailsState extends State<RecipeDetails> {
   RecipeController rc = RecipeController();
   FavouritesController fc = FavouritesController();
   var result;
-  bool addedTofav = false;
 
   @override
   void initState() {
@@ -39,7 +43,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
   }
 
   _addFavConfirmation(BuildContext context) {
-    final user = Provider.of<AppUser>(context);
+    final user = Provider.of<AppUser>(context, listen: false);
     return showDialog(
         context: context,
         builder: (context) {
@@ -61,7 +65,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                         fc.addFavourite(
                             widget.recipeID, widget.recipeName, user.uid);
                         setState(() {
-                          addedTofav = true;
+                          widget.addedTofav = true;
                         });
                         // setState(() {
                         //   _visibilityTag = false;
@@ -74,6 +78,42 @@ class _RecipeDetailsState extends State<RecipeDetails> {
           );
         });
   }
+
+  // _deleteFavConfirmation(BuildContext context, String docID) {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: Text("Press ok to add this recipe to your favourites!",
+  //               style: Theme.of(context).textTheme.bodyText2),
+  //           actions: [
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //               children: [
+  //                 MaterialButton(
+  //                     child: Text('cancel'),
+  //                     onPressed: () {
+  //                       Navigator.pop(context);
+  //                     }),
+  //                 MaterialButton(
+  //                     child: Text('ok'),
+  //                     onPressed: () {
+  //                       fc.deleteFavourite(docID);
+  //                       setState(() {
+  //                         widget.addedTofav = false;
+  //                         // widget.favID = null;
+  //                       });
+  //                       // setState(() {
+  //                       //   _visibilityTag = false;
+  //                       // });
+  //                       Navigator.pop(context);
+  //                     }),
+  //               ],
+  //             )
+  //           ],
+  //         );
+  //       });
+  // }
 
   _buildInstructions(String instructions) {
     var doc = parse(instructions);
@@ -164,12 +204,14 @@ class _RecipeDetailsState extends State<RecipeDetails> {
             actions: [
               IconButton(
                 icon: Icon(
-                  addedTofav ? Icons.favorite : Icons.favorite_border,
-                  color: addedTofav ? Colors.red[700] : null,
+                  widget.addedTofav ? Icons.favorite : Icons.favorite_border,
+                  color: widget.addedTofav ? Colors.red[700] : null,
                   size: 30,
                 ),
                 onPressed: () {
-                  _addFavConfirmation(context);
+                  if (!widget.addedTofav) {
+                    _addFavConfirmation(context);
+                  }
                 },
               )
             ]),

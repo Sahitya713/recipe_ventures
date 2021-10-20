@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:recipe_ventures/controllers/authenticationController.dart';
@@ -10,12 +11,11 @@ import 'package:recipe_ventures/pages/navBar.dart';
 import 'package:recipe_ventures/controllers/userController.dart';
 
 class SignInWidget extends StatelessWidget {
-
   @override
   final myEmailController = TextEditingController();
   final myPasswordController = TextEditingController();
 
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
@@ -26,7 +26,7 @@ Widget build(BuildContext context) {
         leading: IconButton(
           onPressed: () {
             Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
-            print ('Back to welcome page');
+            print('Back to welcome page');
           },
           icon: Icon(
             Icons.arrow_back_ios,
@@ -36,11 +36,11 @@ Widget build(BuildContext context) {
         ),
       ),
       body: SingleChildScrollView(
-        child: Container(
+          child: Container(
         height: MediaQuery.of(context).size.height - 80,
         width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Expanded(
                 child: Column(
@@ -60,26 +60,36 @@ Widget build(BuildContext context) {
                   padding: EdgeInsets.symmetric(horizontal: 40),
                   child: Column(
                     children: <Widget>[
-                      Text('Email Address', style: Theme.of(context).textTheme.subtitle1),
+                      Text('Email Address',
+                          style: Theme.of(context).textTheme.subtitle1),
                       SizedBox(height: 5),
                       TextField(
-                        controller: myEmailController,
-                        decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
-                            border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
-                        obscureText: false
-                      ),
-
-                      Text('Password', style: Theme.of(context).textTheme.subtitle1),
+                          controller: myEmailController,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 10),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey[400]),
+                              ),
+                              border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey[400]))),
+                          obscureText: false),
+                      Text('Password',
+                          style: Theme.of(context).textTheme.subtitle1),
                       SizedBox(height: 5),
                       TextField(
                           controller: myPasswordController,
-                          decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]),),
-                              border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey[400]))),
-                          obscureText: true
-                      ),
-
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 10),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey[400]),
+                              ),
+                              border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey[400]))),
+                          obscureText: true),
                     ],
                   ),
                 ),
@@ -94,46 +104,63 @@ Widget build(BuildContext context) {
                         print("Login pressed");
                         final loginBoolean = await AuthenticationController()
                             .signInWithEmailAndPassword(
-                            myEmailController.text.trim(),
-                            myPasswordController.text.trim());
+                                myEmailController.text.trim(),
+                                myPasswordController.text.trim());
                         if (loginBoolean == 'Pass') {
-                          Navigator.push(context,
+                          Phoenix.rebirth(context);
+                          Navigator.push(
+                              context,
                               MaterialPageRoute(
                                   builder: (context) => Navbar()));
-                        }
-                        else if (loginBoolean == 'WrongPassword') {
-                          showDialog(context:context,
-                              builder: (BuildContext context)
-                              {return AlertDialog(title: Text("Password is incorrect. Please try again."),
-                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                        } else if (loginBoolean == 'WrongPassword') {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                    title: Text(
+                                        "Password is incorrect. Please try again."),
+                                    titleTextStyle:
+                                        Theme.of(context).textTheme.subtitle1);
                               });
-                          }
-                        else if (loginBoolean == 'InvalidEmail') {
-                          showDialog(context:context,
-                              builder: (BuildContext context)
-                              {return AlertDialog(title: Text("The email address is badly formatted. Please try again"),
-                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                        } else if (loginBoolean == 'InvalidEmail') {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                    title: Text(
+                                        "The email address is badly formatted. Please try again"),
+                                    titleTextStyle:
+                                        Theme.of(context).textTheme.subtitle1);
                               });
-                        }
-                        else if (loginBoolean == 'Usernotfound') {
-                          showDialog(context:context,
-                              builder: (BuildContext context)
-                              {return AlertDialog(title: Text("Account does not exist. Please try again"),
-                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                        } else if (loginBoolean == 'Usernotfound') {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                    title: Text(
+                                        "Account does not exist. Please try again"),
+                                    titleTextStyle:
+                                        Theme.of(context).textTheme.subtitle1);
                               });
-                        }
-                        else if (loginBoolean == 'ExceedAttempts') {
-                          showDialog(context:context,
-                              builder: (BuildContext context)
-                              {return AlertDialog(title: Text("The maximum number of attempts has been exceeded. Please try again later."),
-                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                        } else if (loginBoolean == 'ExceedAttempts') {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                    title: Text(
+                                        "The maximum number of attempts has been exceeded. Please try again later."),
+                                    titleTextStyle:
+                                        Theme.of(context).textTheme.subtitle1);
                               });
-                        }
-                        else if (loginBoolean == 'GenericError') {
-                          showDialog(context:context,
-                              builder: (BuildContext context)
-                              {return AlertDialog(title: Text("The email/password entered is invalid. Please try again."),
-                                  titleTextStyle: Theme.of(context).textTheme.subtitle1);
+                        } else if (loginBoolean == 'GenericError') {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                    title: Text(
+                                        "The email/password entered is invalid. Please try again."),
+                                    titleTextStyle:
+                                        Theme.of(context).textTheme.subtitle1);
                               });
                         }
                       },
@@ -149,28 +176,35 @@ Widget build(BuildContext context) {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal:40),
+                  padding: EdgeInsets.symmetric(horizontal: 40),
                   child: OutlinedButton.icon(
-                    onPressed:()async{
-                      final provider = Provider.of<LoginController>(context, listen:false);
+                    onPressed: () async {
+                      final provider =
+                          Provider.of<LoginController>(context, listen: false);
                       await provider.login();
                       final user = FirebaseAuth.instance.currentUser;
 
-                      UserController().createUser(user.displayName, user.email, user.uid);
+                      UserController()
+                          .createUser(user.displayName, user.email, user.uid);
 
-                      try{Navigator.push(context,
-                          MaterialPageRoute(
-                              builder: (context) => Navbar()));}
-                              catch(e){return null;}
+                      try {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Navbar()));
+                      } catch (e) {
+                        return null;
+                      }
                     },
-                    label: Text('Sign in with google', style: Theme.of(context).textTheme.button),
+                    label: Text('Sign in with google',
+                        style: Theme.of(context).textTheme.button),
                     icon: FaIcon(FontAwesomeIcons.google, color: Colors.red),
                     style: OutlinedButton.styleFrom(
                       primary: Colors.white,
-                      minimumSize: Size(double.infinity,60),
-                      padding: EdgeInsets.only(top:3, left:3),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50),),
-                      side: BorderSide(color: Colors.black, width:1),
+                      minimumSize: Size(double.infinity, 60),
+                      padding: EdgeInsets.only(top: 3, left: 3),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      side: BorderSide(color: Colors.black, width: 1),
                     ),
                   ),
                 ),
@@ -182,19 +216,19 @@ Widget build(BuildContext context) {
                         child: Text("Sign Up",
                             style: Theme.of(context).textTheme.button),
                         onPressed: () {
-                          Navigator.pushNamedAndRemoveUntil(context, '/Signup', (_) => false);
-                          print ('Login -> Signup Pressed');
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, '/Signup', (_) => false);
+                          print('Login -> Signup Pressed');
                         }),
                   ],
                 ),
               ],
             ))
           ],
-        ),)
-      ),
+        ),
+      )),
     );
   }
-
 }
 /*
 

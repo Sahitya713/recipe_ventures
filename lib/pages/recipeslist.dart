@@ -37,8 +37,10 @@ class _RecipeListState extends State<RecipeList> {
                   itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
                     return RecipeComponent(
-                        recipeID: snapshot.data[index]['id'],
-                        recipeName: snapshot.data[index]['title']);
+                      recipeID: snapshot.data[index]['id'],
+                      recipeName: snapshot.data[index]['title'],
+                      addedToFav: snapshot.data[index]["isFavourite"],
+                    );
                   }),
             );
           } else {

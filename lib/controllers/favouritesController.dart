@@ -7,14 +7,26 @@ class FavouritesController {
   CollectionReference favRecipes =
       FirebaseFirestore.instance.collection('favRecipes');
 
-  // add a favourite recipe, added only if fav recipe not alr in recipes
-  Future addFavourite(int recipeID, String recipeName, String uid) async {
-    // check whether the recipe id alr exists in users favourites
-    var favourite = favRecipes
+  Future<bool> isFavourite(int recipeID, String uid) async {
+    var favourite = await favRecipes
         .where("userID", isEqualTo: uid)
         .where("recipeID", isEqualTo: recipeID)
         .get();
-    if (favourite == null) {
+
+    if (favourite.docs.length == 0) {
+      return false;
+    }
+    return true;
+  }
+
+  // add a favourite recipe, added only if fav recipe not alr in recipes
+  Future addFavourite(int recipeID, String recipeName, String uid) async {
+    // check whether the recipe id alr exists in users favourites
+    var favourite = await favRecipes
+        .where("userID", isEqualTo: uid)
+        .where("recipeID", isEqualTo: recipeID)
+        .get();
+    if (favourite.docs.length == 0) {
       return "Recipe already in favourites";
     }
 

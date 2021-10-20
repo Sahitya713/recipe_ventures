@@ -31,7 +31,7 @@ class Ingredient {
             (data["expiryDate"] != null) ? data["expiryDate"].toDate() : "null",
         userID: data["userID"] ?? '',
         ingredientID: doc.id);
-    // print(x.name);
+
     return x;
   }
 
@@ -42,7 +42,7 @@ class Ingredient {
         .map((snapshot) {
       return snapshot.docs.map((doc) {
         // print("printing doc");
-        // print(doc.data());
+
         return Ingredient.createIngredientFromFirestore(doc);
       }).toList();
     });

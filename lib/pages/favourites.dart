@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:recipe_ventures/controllers/favouritesController.dart';
 import 'package:recipe_ventures/data/appUser.dart';
 import 'package:recipe_ventures/data/favRecipe.dart';
+import 'package:recipe_ventures/pages/recipedetails.dart';
 
 class Favourites extends StatefulWidget {
   @override
@@ -81,7 +82,18 @@ class _FavouritesState extends State<Favourites> {
                     // bool isSaved = snapshot.data.contains(fav);
 
                     return ListTile(
-                        title: Text(title),
+                        title: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RecipeDetails(
+                                            recipeID: fav.recipeID,
+                                            recipeName: title,
+                                            addedTofav: true,
+                                          )));
+                            },
+                            child: Text(title)),
                         trailing: IconButton(
                           // icon: Icon(
                           //   isSaved ? Icons.favorite : Icons.favorite_border,

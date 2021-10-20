@@ -188,14 +188,14 @@ class _StoreState extends State<Store> {
             ingredients.add(ingredientObj.name);
           }
           return IngredientComponent(
-              ingredientID: ingredientObj.ingredientID,
-              ingredientName: ingredientObj.name,
-              chosenQuantity: ingredientObj.quantity.toString(),
-              chosenUnit: ingredientObj.metric,
-              expiryDate: ingredientObj.expiryDate,
-              checkboxVisibility: checkboxVisible,
-              selectAll: selectAll,
-              cfmIndex: -1,
+            ingredientID: ingredientObj.ingredientID,
+            ingredientName: ingredientObj.name,
+            chosenQuantity: ingredientObj.quantity.toString(),
+            chosenUnit: ingredientObj.metric,
+            expiryDate: ingredientObj.expiryDate,
+            checkboxVisibility: checkboxVisible,
+            selectAll: selectAll,
+            cfmIndex: -1,
           );
         });
   }
@@ -203,13 +203,11 @@ class _StoreState extends State<Store> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AppUser>(context);
-    print(user.uid);
+
     return StreamBuilder<List<dynamic>>(
         stream: Ingredient.getStore(user.uid),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-          print(snapshot.data);
           if (snapshot.hasData) {
-            print(snapshot.data[0].name);
             return Scaffold(
               appBar: AppBar(
                   leading: Visibility(

@@ -6,10 +6,12 @@ import 'package:recipe_ventures/utils/constants.dart';
 class RecipeComponent extends StatefulWidget {
   int recipeID;
   String recipeName;
+  bool addedToFav;
 
   RecipeComponent({
     @required this.recipeID,
     @required this.recipeName,
+    this.addedToFav = false,
   });
 
   @override
@@ -46,6 +48,7 @@ class _RecipeComponentState extends State<RecipeComponent> {
                   builder: (context) => RecipeDetails(
                         recipeID: widget.recipeID,
                         recipeName: widget.recipeName,
+                        addedTofav: widget.addedToFav,
                       )),
             );
           },
