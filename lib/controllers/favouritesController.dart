@@ -26,7 +26,7 @@ class FavouritesController {
         .where("userID", isEqualTo: uid)
         .where("recipeID", isEqualTo: recipeID)
         .get();
-    if (favourite.docs.length == 0) {
+    if (favourite.docs.length != 0) {
       return "Recipe already in favourites";
     }
 
