@@ -6,6 +6,8 @@ import 'package:recipe_ventures/data/appUser.dart';
 import 'package:recipe_ventures/data/favRecipe.dart';
 import 'package:recipe_ventures/pages/recipedetails.dart';
 
+import 'navBar.dart';
+
 class Favourites extends StatefulWidget {
   @override
   _FavouritesState createState() => _FavouritesState();
@@ -118,6 +120,10 @@ class _FavouritesState extends State<Favourites> {
               } else {
                 return Container();
               }
-            }));
+            }
+        ),
+      // bottomNavigationBar: Navbar(),
+    );
+
   }
 }

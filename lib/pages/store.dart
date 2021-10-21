@@ -286,6 +286,7 @@ class _StoreState extends State<Store> {
                 child: const Icon(Icons.add),
                 backgroundColor: Theme.of(context).primaryColor,
               ),
+              // bottomNavigationBar: Navbar(),
             );
           } else {
             return Scaffold(
@@ -338,8 +339,10 @@ class _StoreState extends State<Store> {
                 child: const Icon(Icons.add),
                 backgroundColor: Theme.of(context).primaryColor,
               ),
+              // bottomNavigationBar: Navbar(),
             );
           }
         });
+
   }
 }

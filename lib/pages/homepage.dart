@@ -14,6 +14,9 @@ import 'package:provider/provider.dart';
 import 'package:recipe_ventures/pages/ingredientConfirmationPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:recipe_ventures/pages/settingspage.dart';
+import 'package:tflite/tflite.dart';
+
+import 'navBar.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -23,6 +26,45 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   File image;
   String _imageCaptureChoice;
+  List _output;
+
+  @override
+  void initState() {
+    super.initState();
+    loadModel().then((value) {
+      setState(() {
+        print("model loaded");
+        print(value);
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Tflite.close();
+  }
+
+  classifyImage(File image) async {
+    var output = await Tflite.runModelOnImage(
+        path: image.path,
+        numResults: 36,
+        threshold: 0.5,
+        imageMean: 127.5,
+        imageStd: 127.5
+    );
+    setState(() {
+      _output = output;
+    });
+    print(_output);
+  }
+
+  loadModel() async {
+    await Tflite.loadModel(
+        model: 'assets/model.tflite',
+        labels: 'assets/labels.txt'
+    );
+  }
 
   Future pickImageGallery() async {
     try {
@@ -36,6 +78,7 @@ class _HomepageState extends State<Homepage> {
     } on PlatformException catch (e) {
       print('Failed to pick image');
     }
+    classifyImage(image);
   }
 
   Future pickImageCamera() async {
@@ -50,6 +93,7 @@ class _HomepageState extends State<Homepage> {
     } on PlatformException catch (e) {
       print('Failed to pick image');
     }
+    classifyImage(image);
   }
 
   @override
@@ -148,7 +192,7 @@ class _HomepageState extends State<Homepage> {
               ),
             ),
           ),
-          image != null
+          _output != null
               ? Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 10),
                   child: Row(
@@ -157,10 +201,10 @@ class _HomepageState extends State<Homepage> {
                       ElevatedButton(
                         onPressed: () {
                           // Get list of ingredient
-                          List ingredients = [
-                            'egg',
-                            'carrot'
-                          ];
+                          List ingredients = [];
+                          for (var i in _output) {
+                            ingredients.add(i['label']);
+                          }
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -192,7 +236,8 @@ class _HomepageState extends State<Homepage> {
                     ],
                   ),
                 )
-              : Container()
+              : Container(),
+
           // Center(
           //   // child: Text('upload Image')
           //   child: GestureDetector(
@@ -211,6 +256,7 @@ class _HomepageState extends State<Homepage> {
           // )
         ],
       ),
+      // bottomNavigationBar: Navbar(),
     );
   }
 }

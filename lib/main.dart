@@ -75,6 +75,18 @@ class _MyAppState extends State<MyApp> {
               '/Favourites': (context) => Favourites(),
               '/Store': (context) => Store(),
             },
+            // home: Scaffold(
+            //   bottomNavigationBar: Navbar(),
+            //   body: Navigator(
+            //     onGenerateRoute: (settings) {
+            //       Widget page = Homepage();
+            //       if (settings.name == 'Store') page = Store();
+            //       else if (settings.name == 'Favourites') page = Favourites();
+            //       else if (settings.name == 'Homepage') page = Homepage();
+            //       return MaterialPageRoute(builder: (_) => page);
+            //     },
+            //   ),
+            // )
             // MainPage(),
           ),
         ));

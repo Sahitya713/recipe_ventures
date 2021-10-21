@@ -109,6 +109,8 @@ class _IngredientConfirmationPageState
                                 builder: (context) =>
                                     Store()),
                           );
+
+                // Navigator.pushNamed(context, 'Store');
               },
               child: Text('Confirm'),
               style: ElevatedButton.styleFrom(
