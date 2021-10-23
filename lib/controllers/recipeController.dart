@@ -11,7 +11,7 @@ class RecipeController {
     var url = Uri.https('api.spoonacular.com', '/recipes/findByIngredients', {
       "apiKey": "fdaee5a82b29439689e4bda0644cc60f",
       "ingredients": ingredients.join(","),
-      "number": "1",
+      "number": "5",
       "sort": "max-used-ingredients"
     });
     var response = await http.get(url);

@@ -126,7 +126,7 @@ class _StoreState extends State<Store> {
                                 'g',
                                 'kg',
                                 'ml',
-                                'l',
+                                'litre',
                                 'units',
                               ].map<DropdownMenuItem<String>>((String qty) {
                                 return DropdownMenuItem<String>(

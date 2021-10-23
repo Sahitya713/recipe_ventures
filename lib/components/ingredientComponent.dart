@@ -192,7 +192,7 @@ class _IngredientComponentState extends State<IngredientComponent> {
                             ),
                             DropdownButton<String>(
                               value: widget.chosenUnit,
-                              items: <String>['g', 'kg', 'ml', 'l', 'units']
+                              items: <String>['g', 'kg', 'ml', 'litre', 'units']
                                   .map<DropdownMenuItem<String>>((String qty) {
                                 return DropdownMenuItem<String>(
                                   value: qty,
