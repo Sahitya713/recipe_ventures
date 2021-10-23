@@ -102,6 +102,8 @@ class _IngredientConfirmationPageState
                 // print(ingredientsToAdd);
                 sc.addIngredients(ingredientsToAdd,
                     user.uid); // create ingredient obj then add
+                globals.finalIngredients = {};
+                globals.deletedIndex = [];
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Navbar(selectedIndex: 2,)),
