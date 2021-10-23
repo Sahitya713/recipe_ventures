@@ -7,19 +7,23 @@ import 'package:recipe_ventures/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Navbar extends StatefulWidget {
+  int selectedIndex;
+
+  Navbar({this.selectedIndex = 1});
+
   @override
   _NavbarState createState() => _NavbarState();
 }
 
 class _NavbarState extends State<Navbar> {
-  int _selectedIndex = 1;
+
   final double iconSize = 30;
 
   final List<Widget> _pages = [Favourites(), Homepage(), Store()];
 
   void onTappedBar(int index) {
     setState(() {
-      _selectedIndex = index;
+      widget.selectedIndex = index;
     });
   }
 
@@ -36,9 +40,9 @@ class _NavbarState extends State<Navbar> {
     printUsername();
 
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: _pages[widget.selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedIndex,
+          currentIndex: widget.selectedIndex,
           selectedItemColor: kOrange,
           onTap: onTappedBar,
           items: <BottomNavigationBarItem>[

@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:recipe_ventures/utils/globals.dart' as globals;
 import 'package:provider/provider.dart';
 import 'package:recipe_ventures/data/appUser.dart';
+import 'navBar.dart';
 
 class IngredientConfirmationPage extends StatefulWidget {
   final List ingredientList;
@@ -19,10 +20,8 @@ class IngredientConfirmationPage extends StatefulWidget {
 
 class _IngredientConfirmationPageState
     extends State<IngredientConfirmationPage> {
-
   List<Map<dynamic, dynamic>> ingredientsToAdd = [];
   StoreController sc = StoreController();
-
 
   List<Widget> _generateList(ingredientList) {
     List<Widget> widgetList = [];
@@ -30,15 +29,16 @@ class _IngredientConfirmationPageState
     globals.deletedIndex = [];
     globals.finalIngredients = {};
     for (i = 0; i < ingredientList.length; i++) {
-      widgetList.add(
-        IngredientComponent(ingredientID: "", ingredientName: ingredientList[i],
-                            chosenQuantity: "1",
-                            chosenUnit: "units",
-                            expiryDate: DateTime.now().add(const Duration(days: 7)) ,
-                            checkboxVisibility: false,
-                            selectAll: false,
-                            cfmIndex: i,)
-      );
+      widgetList.add(IngredientComponent(
+        ingredientID: "",
+        ingredientName: ingredientList[i],
+        chosenQuantity: '1',
+        chosenUnit: "units",
+        expiryDate: DateTime.now().add(const Duration(days: 7)),
+        checkboxVisibility: false,
+        selectAll: false,
+        cfmIndex: i,
+      ));
     }
     print(globals.finalIngredients);
     for (var i = 0; i < widget.ingredientList.length; i++) {
@@ -95,26 +95,23 @@ class _IngredientConfirmationPageState
                 // print("globals.finalIngredients");
                 // print(globals.finalIngredients);
                 for (var i = 0; i < widget.ingredientList.length; i++) {
-                  if (!globals.deletedIndex.contains(i)){
+                  if (!globals.deletedIndex.contains(i)) {
                     ingredientsToAdd.add(globals.finalIngredients.elementAt(i));
                   }
                 }
                 // print(ingredientsToAdd);
-                sc.addIngredients(
-                    ingredientsToAdd,
+                sc.addIngredients(ingredientsToAdd,
                     user.uid); // create ingredient obj then add
                 Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    Store()),
-                          );
+                  context,
+                  MaterialPageRoute(builder: (context) => Navbar(selectedIndex: 2,)),
+                );
 
                 // Navigator.pushNamed(context, 'Store');
               },
               child: Text('Confirm'),
               style: ElevatedButton.styleFrom(
-                 // fixedSize: Size(170, 36),
+                  // fixedSize: Size(170, 36),
                   primary: Theme.of(context).primaryColor),
             ),
           ),
