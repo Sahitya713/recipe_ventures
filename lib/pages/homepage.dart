@@ -123,145 +123,148 @@ class _HomepageState extends State<Homepage> {
               },
             )
           ]),
-      body: Column(
-        children: [
-          // Container to tap for taking picture
-          SizedBox(
-            height: 20,
-          ),
-          SizedBox(
-            width: 350,
-            height: 40,
-            child: Text("Hi ${user.displayName}! 👋",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.start),
-          ),
-          SizedBox(
-            width: 350,
-            height: 20,
-            child: Text("Just bought new ingredients? upload below.",
-                style: TextStyle(fontSize: 16), textAlign: TextAlign.start),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 25.0, right: 25.0, top: 15.0),
-            child: FocusedMenuHolder(
-              menuOffset: 10,
-              onPressed: () {},
-              menuItems: [
-                FocusedMenuItem(
-                  title: Text('Take a picture'),
-                  onPressed: () =>
-                      {pickImageCamera(), _imageCaptureChoice = 'image'},
-                ),
-                FocusedMenuItem(
-                    title: Text('Upload from gallery'),
+      body: SingleChildScrollView(
+        child:
+        Column(
+          children: [
+            // Container to tap for taking picture
+            SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              width: 350,
+              height: 40,
+              child: Text("Hi ${user.displayName}! 👋",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.start),
+            ),
+            SizedBox(
+              width: 350,
+              height: 20,
+              child: Text("Just bought new ingredients? upload below.",
+                  style: TextStyle(fontSize: 16), textAlign: TextAlign.start),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 25.0, right: 25.0, top: 15.0),
+              child: FocusedMenuHolder(
+                menuOffset: 10,
+                onPressed: () {},
+                menuItems: [
+                  FocusedMenuItem(
+                    title: Text('Take a picture'),
                     onPressed: () =>
-                        {pickImageGallery(), _imageCaptureChoice = 'gallery'}),
-              ],
-              menuWidth: MediaQuery.of(context).size.width - 50,
-              openWithTap: true,
-              blurBackgroundColor: Theme.of(context).backgroundColor,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: AspectRatio(
-                  aspectRatio: 1 / 1.15,
-                  child: image != null
-                      ? Image.file(
-                          image,
-                          width: 100,
-                          height: 400,
-                          fit: BoxFit.cover,
-                        )
-                      : Container(
-                          width: 100,
-                          height: 400,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    'https://solidstarts.com/wp-content/uploads/when-can-babies-eat-eggs.jpg'),
-                                fit: BoxFit.cover),
+                    {pickImageCamera(), _imageCaptureChoice = 'image'},
+                  ),
+                  FocusedMenuItem(
+                      title: Text('Upload from gallery'),
+                      onPressed: () =>
+                      {pickImageGallery(), _imageCaptureChoice = 'gallery'}),
+                ],
+                menuWidth: MediaQuery.of(context).size.width - 50,
+                openWithTap: true,
+                blurBackgroundColor: Theme.of(context).backgroundColor,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: AspectRatio(
+                    aspectRatio: 1 / 1.15,
+                    child: image != null
+                        ? Image.file(
+                      image,
+                      width: 100,
+                      height: 400,
+                      fit: BoxFit.cover,
+                    )
+                        : Container(
+                      width: 100,
+                      height: 400,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(
+                                'https://solidstarts.com/wp-content/uploads/when-can-babies-eat-eggs.jpg'),
+                            fit: BoxFit.cover),
+                      ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Icon(Icons.camera_alt_rounded,
+                              size: 80, color: Colors.black),
+                          BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+                            child: Container(
+                              color: Colors.grey.withOpacity(0.4),
+                            ),
                           ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Icon(Icons.camera_alt_rounded,
-                                  size: 80, color: Colors.black),
-                              BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-                                child: Container(
-                                  color: Colors.grey.withOpacity(0.4),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-          _output != null
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25, top: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          // Get list of ingredient
-                          List ingredients = [];
-                          for (var i in _output) {
-                            ingredients.add(i['label']);
-                          }
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    IngredientConfirmationPage(
-                                        ingredients, image)),
-                          );
-                          print('add to store');
-                        },
-                        child: Text('Add to store'),
-                        style: ElevatedButton.styleFrom(
-                            //fixedSize: Size(170, 36),
-                            primary: Theme.of(context).primaryColor),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_imageCaptureChoice == 'gallery') {
-                            pickImageGallery();
-                          } else {
-                            pickImageCamera();
-                          }
-                          print('retake image');
-                        },
-                        child: Text('Retake Image'),
-                        style: ElevatedButton.styleFrom(
-                            //fixedSize: Size(170, 36),
-                            primary: Theme.of(context).primaryColor),
-                      )
-                    ],
+            _output != null
+                ? Padding(
+              padding: const EdgeInsets.only(left: 25, right: 25, top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // Get list of ingredient
+                      List ingredients = [];
+                      for (var i in _output) {
+                        ingredients.add(i['label']);
+                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                IngredientConfirmationPage(
+                                    ingredients, image)),
+                      );
+                      print('add to store');
+                    },
+                    child: Text('Add to store'),
+                    style: ElevatedButton.styleFrom(
+                      //fixedSize: Size(170, 36),
+                        primary: Theme.of(context).primaryColor),
                   ),
-                )
-              : Container(),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_imageCaptureChoice == 'gallery') {
+                        pickImageGallery();
+                      } else {
+                        pickImageCamera();
+                      }
+                      print('retake image');
+                    },
+                    child: Text('Retake Image'),
+                    style: ElevatedButton.styleFrom(
+                      //fixedSize: Size(170, 36),
+                        primary: Theme.of(context).primaryColor),
+                  )
+                ],
+              ),
+            )
+                : Container(),
 
-          // Center(
-          //   // child: Text('upload Image')
-          //   child: GestureDetector(
-          //       onTap: () {
-          //         TestManager().getTest();
-          //       },
-          //       child: Text('upload Image',
-          //           style: Theme.of(context).textTheme.bodyText2)),
-          // ),
-          // GestureDetector(
-          //   onTap: () {
-          //     // RecipeManager().generateRecipes(["cheddar", "onion"]);
-          //     RecipeManager().getRecipe("1416203");
-          //   },
-          //   child: Text('Generate recipes'),
-          // )
-        ],
+            // Center(
+            //   // child: Text('upload Image')
+            //   child: GestureDetector(
+            //       onTap: () {
+            //         TestManager().getTest();
+            //       },
+            //       child: Text('upload Image',
+            //           style: Theme.of(context).textTheme.bodyText2)),
+            // ),
+            // GestureDetector(
+            //   onTap: () {
+            //     // RecipeManager().generateRecipes(["cheddar", "onion"]);
+            //     RecipeManager().getRecipe("1416203");
+            //   },
+            //   child: Text('Generate recipes'),
+            // )
+          ],
+        ),
       ),
       // bottomNavigationBar: Navbar(),
     );

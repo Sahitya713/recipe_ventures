@@ -106,10 +106,10 @@ class _IngredientComponentState extends State<IngredientComponent> {
                   MaterialButton(
                       child: Text('ok'),
                       onPressed: () {
-                        if (globals.finalIngredients.length > 0) {
-                          print("inside deleted if");
-                          globals.deletedIndex.add(widget.cfmIndex);
-                        }
+                        // if (globals.finalIngredients.length > 0) {
+                        //   print("inside deleted if");
+                        //   globals.deletedIndex.add(widget.cfmIndex);
+                        // }
                         sc.deleteIngredient(widget.ingredientID);
                         // setState(() {
                         //   print("setting " + widget.ingredientName + " to non visible");
