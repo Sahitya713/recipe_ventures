@@ -178,8 +178,8 @@ class _HomepageState extends State<Homepage> {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                                 image: NetworkImage(
-                                    'https://solidstarts.com/wp-content/uploads/when-can-babies-eat-eggs.jpg'),
-                                fit: BoxFit.cover),
+                                    'https://i.imgur.com/rSgQpuZ.png')
+                            ),
                           ),
                           child: Stack(
                             alignment: Alignment.center,
