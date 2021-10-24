@@ -16,7 +16,6 @@ class Navbar extends StatefulWidget {
 }
 
 class _NavbarState extends State<Navbar> {
-
   final double iconSize = 30;
 
   final List<Widget> _pages = [Favourites(), Homepage(), Store()];
@@ -53,7 +52,7 @@ class _NavbarState extends State<Navbar> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.add_a_photo,
                     size: iconSize, color: Theme.of(context).accentColor),
-                label: 'Upload Image'),
+                label: 'Upload Ingredients'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.kitchen,
                     size: iconSize, color: Theme.of(context).accentColor),

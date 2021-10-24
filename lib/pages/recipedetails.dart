@@ -62,7 +62,6 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                   MaterialButton(
                       child: Text('ok'),
                       onPressed: () {
-                        print("HELLLO");
                         fc.addFavourite(
                             widget.recipeID, widget.recipeName, user.uid);
                         setState(() {
@@ -147,9 +146,13 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                 new Container(
                     padding: EdgeInsets.all(16.0),
                     child: Text(snapshot.data.title,
-                        style: Theme.of(context).textTheme.headline4)),
+                        style: TextStyle(
+                            fontSize: 83.0,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w100,
+                            color: Colors.black87))),
                 SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 new Container(
                   padding: EdgeInsets.all(16.0),
@@ -159,7 +162,19 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                   height: 10,
                 ),
                 new Container(
-                    child: Text("Ingredients Needed",
+                  width: 400,
+                  child: new Column(children: [
+                    Row(mainAxisSize: MainAxisSize.max, children: [
+                      Text("serves ${snapshot.data.servings.toString()} people")
+                    ]),
+                    Row(mainAxisSize: MainAxisSize.max, children: [
+                      Text(
+                          "Ready in ${snapshot.data.readyInMinutes.toString()} minutes")
+                    ])
+                  ]),
+                ),
+                new Container(
+                    child: Text("INGREDIENTS",
                         style: Theme.of(context).textTheme.headline5)),
                 SizedBox(
                   height: 10,
@@ -180,7 +195,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                   height: 10,
                 ),
                 new Container(
-                    child: Text("Instructions",
+                    child: Text("INSTRUCTIONS",
                         style: Theme.of(context).textTheme.headline5)),
                 new Column(children: [
                   _buildInstructions(snapshot.data.instructions),

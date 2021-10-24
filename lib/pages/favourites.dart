@@ -64,66 +64,56 @@ class _FavouritesState extends State<Favourites> {
     final user = Provider.of<AppUser>(context);
 
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title:
-              Text('Favourites', style: Theme.of(context).textTheme.headline6),
-        ),
-        body: StreamBuilder<List<FavRecipe>>(
-            stream: FavRecipe.getFavRecipes(user.uid),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<FavRecipe>> snapshot) {
-              if (snapshot.hasData) {
-                return ListView.separated(
-                  itemCount: snapshot.data.length,
-                  separatorBuilder: (BuildContext context, int index) =>
-                      Divider(),
-                  itemBuilder: (BuildContext context, int index) {
-                    String title = snapshot.data[index].title;
-                    FavRecipe fav = snapshot.data[index];
-                    // bool isSaved = snapshot.data.contains(fav);
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('Favourites', style: Theme.of(context).textTheme.headline6),
+      ),
+      body: StreamBuilder<List<FavRecipe>>(
+          stream: FavRecipe.getFavRecipes(user.uid),
+          builder:
+              (BuildContext context, AsyncSnapshot<List<FavRecipe>> snapshot) {
+            if (snapshot.hasData) {
+              return ListView.separated(
+                itemCount: snapshot.data.length,
+                separatorBuilder: (BuildContext context, int index) =>
+                    Divider(),
+                itemBuilder: (BuildContext context, int index) {
+                  String title = snapshot.data[index].title;
+                  FavRecipe fav = snapshot.data[index];
+                  // bool isSaved = snapshot.data.contains(fav);
 
-                    return ListTile(
-                        title: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RecipeDetails(
-                                            recipeID: fav.recipeID,
-                                            recipeName: title,
-                                            addedTofav: true,
-                                          )));
-                            },
-                            child: Text(title)),
-                        trailing: IconButton(
-                          // icon: Icon(
-                          //   isSaved ? Icons.favorite : Icons.favorite_border,
-                          //   color: isSaved ? Colors.red : null,
-                          // ),
-                          icon: Icon(Icons.favorite, color: Colors.red[600]),
-                          onPressed: () {
-                            _deleteFavConfirmation(context, fav.docID);
-                            // setState(() {
-                            //   if (isSaved) {
-                            //     // use when recipe page is up
-                            //     // deleteFavourite(String favRecipeID);
-                            //     items.remove(fav);
-                            //   } else {
-                            //     items.add(fav);
-                            //   }
-                            // });
-                          },
-                        ));
-                  },
-                );
-              } else {
-                return Container();
-              }
+                  return ListTile(
+                      // shape: RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.circular(20.0)),
+                      // tileColor: Colors.red,
+                      // minVerticalPadding: 10,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RecipeDetails(
+                                      recipeID: fav.recipeID,
+                                      recipeName: title,
+                                      addedTofav: true,
+                                    )));
+                      },
+                      title: Text(
+                        title,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.favorite, color: Colors.red[600]),
+                        onPressed: () {
+                          _deleteFavConfirmation(context, fav.docID);
+                        },
+                      ));
+                },
+              );
+            } else {
+              return Container();
             }
-        ),
+          }),
       // bottomNavigationBar: Navbar(),
     );
-
   }
 }

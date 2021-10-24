@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:recipe_ventures/controllers/authenticationController.dart';
 import 'package:recipe_ventures/controllers/loginController.dart';
 import 'package:provider/provider.dart';
+import 'package:recipe_ventures/data/appUser.dart';
 import 'package:recipe_ventures/pages/ingredientConfirmationPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:recipe_ventures/pages/settingspage.dart';
@@ -51,8 +52,7 @@ class _HomepageState extends State<Homepage> {
         numResults: 36,
         threshold: 0.5,
         imageMean: 127.5,
-        imageStd: 127.5
-    );
+        imageStd: 127.5);
     setState(() {
       _output = output;
     });
@@ -61,9 +61,7 @@ class _HomepageState extends State<Homepage> {
 
   loadModel() async {
     await Tflite.loadModel(
-        model: 'assets/model.tflite',
-        labels: 'assets/labels.txt'
-    );
+        model: 'assets/model.tflite', labels: 'assets/labels.txt');
   }
 
   Future pickImageGallery() async {
@@ -98,37 +96,51 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<AppUser>(context);
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () async {
-            await LoginController().signOut();
-            Phoenix.rebirth(context);
-            // Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
-            // print ('Back to welcome page');
-          },
-          icon: Icon(
-            Icons.logout,
-            size: 20,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
-        title: Text('Welcome', style: Theme.of(context).textTheme.headline6),
-        actions:[
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage()));
-            },
-          )
-        ]
-      ),
+          // leading: IconButton(
+          //   onPressed: () async {
+          //     await LoginController().signOut();
+          //     Phoenix.rebirth(context);
+          //     // Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+          //     // print ('Back to welcome page');
+          //   },
+          //   icon: Icon(
+          //     Icons.logout,
+          //     size: 20,
+          //     color: Colors.black,
+          //   ),
+          // ),
+          centerTitle: true,
+          title: Text('Welcome', style: Theme.of(context).textTheme.headline6),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => settingsPage()));
+              },
+            )
+          ]),
       body: Column(
         children: [
           // Container to tap for taking picture
           SizedBox(
             height: 20,
+          ),
+          SizedBox(
+            width: 350,
+            height: 40,
+            child: Text("Hi ${user.displayName}! 👋",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.start),
+          ),
+          SizedBox(
+            width: 350,
+            height: 20,
+            child: Text("Just bought new ingredients? upload below.",
+                style: TextStyle(fontSize: 16), textAlign: TextAlign.start),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 25.0, right: 25.0, top: 15.0),
@@ -138,18 +150,13 @@ class _HomepageState extends State<Homepage> {
               menuItems: [
                 FocusedMenuItem(
                   title: Text('Take a picture'),
-                  onPressed: () => {
-                      pickImageCamera(),
-                      _imageCaptureChoice = 'image'
-                    },
+                  onPressed: () =>
+                      {pickImageCamera(), _imageCaptureChoice = 'image'},
                 ),
                 FocusedMenuItem(
-                  title: Text('Upload from gallery'),
-                  onPressed: () => {
-                    pickImageGallery(),
-                    _imageCaptureChoice = 'gallery'
-                  }
-                ),
+                    title: Text('Upload from gallery'),
+                    onPressed: () =>
+                        {pickImageGallery(), _imageCaptureChoice = 'gallery'}),
               ],
               menuWidth: MediaQuery.of(context).size.width - 50,
               openWithTap: true,
@@ -178,7 +185,7 @@ class _HomepageState extends State<Homepage> {
                             alignment: Alignment.center,
                             children: [
                               Icon(Icons.camera_alt_rounded,
-                                  size: 100, color: Colors.black),
+                                  size: 80, color: Colors.black),
                               BackdropFilter(
                                 filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
                                 child: Container(
@@ -221,9 +228,9 @@ class _HomepageState extends State<Homepage> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          if (_imageCaptureChoice == 'gallery'){
+                          if (_imageCaptureChoice == 'gallery') {
                             pickImageGallery();
-                          } else{
+                          } else {
                             pickImageCamera();
                           }
                           print('retake image');
