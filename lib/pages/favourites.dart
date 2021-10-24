@@ -5,6 +5,7 @@ import 'package:recipe_ventures/controllers/favouritesController.dart';
 import 'package:recipe_ventures/data/appUser.dart';
 import 'package:recipe_ventures/data/favRecipe.dart';
 import 'package:recipe_ventures/pages/recipedetails.dart';
+import 'package:recipe_ventures/utils/constants.dart';
 
 import 'navBar.dart';
 
@@ -73,42 +74,59 @@ class _FavouritesState extends State<Favourites> {
           builder:
               (BuildContext context, AsyncSnapshot<List<FavRecipe>> snapshot) {
             if (snapshot.hasData) {
-              return ListView.separated(
-                itemCount: snapshot.data.length,
-                separatorBuilder: (BuildContext context, int index) =>
-                    Divider(),
-                itemBuilder: (BuildContext context, int index) {
-                  String title = snapshot.data[index].title;
-                  FavRecipe fav = snapshot.data[index];
-                  // bool isSaved = snapshot.data.contains(fav);
+              return Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: ListView.separated(
+                    itemCount: snapshot.data.length,
+                    separatorBuilder: (BuildContext context, int index) =>
+                        Divider(),
+                    itemBuilder: (BuildContext context, int index) {
+                      String title = snapshot.data[index].title;
+                      FavRecipe fav = snapshot.data[index];
+                      // bool isSaved = snapshot.data.contains(fav);
 
-                  return ListTile(
-                      // shape: RoundedRectangleBorder(
-                      //     borderRadius: BorderRadius.circular(20.0)),
-                      // tileColor: Colors.red,
-                      // minVerticalPadding: 10,
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RecipeDetails(
-                                      recipeID: fav.recipeID,
-                                      recipeName: title,
-                                      addedTofav: true,
-                                    )));
-                      },
-                      title: Text(
-                        title,
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.favorite, color: Colors.red[600]),
-                        onPressed: () {
-                          _deleteFavConfirmation(context, fav.docID);
-                        },
-                      ));
-                },
-              );
+                      return Container(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 10),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: kOrange, width: 3)),
+                        child: ListTile(
+                            visualDensity:
+                                VisualDensity(horizontal: 4, vertical: -4),
+                            // shape: RoundedRectangleBorder(
+                            //     borderRadius: BorderRadius.circular(20.0)),
+                            // tileColor: Colors.red,
+                            // minVerticalPadding: 10,
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RecipeDetails(
+                                            recipeID: fav.recipeID,
+                                            recipeName: title,
+                                            addedTofav: true,
+                                          )));
+                            },
+                            title: Text(
+                              title,
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            trailing: IconButton(
+                              padding: EdgeInsets.only(bottom: 3, left: 15),
+                              icon: Icon(
+                                Icons.favorite,
+                                color: Colors.red[600],
+                                size: 30,
+                              ),
+                              onPressed: () {
+                                _deleteFavConfirmation(context, fav.docID);
+                              },
+                            )),
+                      );
+                    },
+                  ));
             } else {
               return Container();
             }

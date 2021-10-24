@@ -138,7 +138,8 @@ class _IngredientComponentState extends State<IngredientComponent> {
         _checkExpiry(_alertExpiry);
         _setTextColor(_alertExpiry);
         if (globals.finalIngredients.length > 0) {
-          globals.finalIngredients.elementAt(widget.cfmIndex)['expiryDate'] = selectedDate;
+          globals.finalIngredients.elementAt(widget.cfmIndex)['expiryDate'] =
+              selectedDate;
         }
       });
     }
@@ -163,7 +164,9 @@ class _IngredientComponentState extends State<IngredientComponent> {
                             setState(() {
                               widget.ingredientName = newName;
                               if (globals.finalIngredients.length > 0) {
-                                globals.finalIngredients.elementAt(widget.cfmIndex)['name'] = newName;
+                                globals.finalIngredients
+                                        .elementAt(widget.cfmIndex)['name'] =
+                                    newName;
                               }
                             });
                           },
@@ -183,7 +186,9 @@ class _IngredientComponentState extends State<IngredientComponent> {
                                   setState(() {
                                     widget.chosenQuantity = newQuantity;
                                     if (globals.finalIngredients.length > 0) {
-                                      globals.finalIngredients.elementAt(widget.cfmIndex)['quantity'] = int.parse(newQuantity);
+                                      globals.finalIngredients.elementAt(
+                                              widget.cfmIndex)['quantity'] =
+                                          int.parse(newQuantity);
                                     }
                                   });
                                 },
@@ -205,7 +210,9 @@ class _IngredientComponentState extends State<IngredientComponent> {
                                 setState(() {
                                   widget.chosenUnit = unit;
                                   if (globals.finalIngredients.length > 0) {
-                                    globals.finalIngredients.elementAt(widget.cfmIndex)['metric'] = unit;;
+                                    globals.finalIngredients.elementAt(
+                                        widget.cfmIndex)['metric'] = unit;
+                                    ;
                                   }
                                 });
                               },
@@ -289,7 +296,7 @@ class _IngredientComponentState extends State<IngredientComponent> {
                                   .contains(widget.ingredientName)) {
                                 globals.selectedIngredients
                                     .add(widget.ingredientName);
-                                print(globals.selectedIngredients);
+                                // print(globals.selectedIngredients);
                               }
                             } else {
                               if (globals.selectedIngredients

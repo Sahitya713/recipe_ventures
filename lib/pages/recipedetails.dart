@@ -9,6 +9,7 @@ import 'package:recipe_ventures/controllers/recipeController.dart';
 import 'package:recipe_ventures/data/appUser.dart';
 import 'package:recipe_ventures/data/recipe.dart';
 import 'package:html/parser.dart';
+import 'package:recipe_ventures/utils/constants.dart';
 
 import '../main.dart';
 
@@ -162,18 +163,38 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                   height: 10,
                 ),
                 new Container(
-                  width: 400,
-                  child: new Column(children: [
-                    Row(mainAxisSize: MainAxisSize.max, children: [
-                      Text("serves ${snapshot.data.servings.toString()} people")
-                    ]),
-                    Row(mainAxisSize: MainAxisSize.max, children: [
-                      Text(
-                          "Ready in ${snapshot.data.readyInMinutes.toString()} minutes")
-                    ])
-                  ]),
+                  width: 300,
+                  child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(mainAxisSize: MainAxisSize.max, children: [
+                          Icon(Icons.group),
+                          SizedBox(width: 5),
+                          Text("serves ${snapshot.data.servings.toString()}",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w300))
+                        ]),
+
+                        SizedBox(height: 5),
+
+                        Row(mainAxisSize: MainAxisSize.max, children: [
+                          Icon(Icons.watch_later_outlined),
+                          SizedBox(width: 5),
+                          Text(
+                              "${snapshot.data.readyInMinutes.toString()} minutes",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w300))
+                        ]),
+
+                        // Text(snapshot.data.nutrients.toString()),
+                      ]),
                 ),
+                SizedBox(height: 20),
                 new Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 30),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: kOrange, width: 3)),
                     child: Text("INGREDIENTS",
                         style: Theme.of(context).textTheme.headline5)),
                 SizedBox(
@@ -195,13 +216,56 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                   height: 10,
                 ),
                 new Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 30),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: kOrange, width: 3)),
                     child: Text("INSTRUCTIONS",
                         style: Theme.of(context).textTheme.headline5)),
-                new Column(children: [
-                  _buildInstructions(snapshot.data.instructions),
-                ]),
+                SizedBox(height: 15),
+                Container(
+                  width: 380,
+                  child: new Column(children: [
+                    _buildInstructions(snapshot.data.instructions),
+                  ]),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                new Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 30),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: kOrange, width: 3)),
+                    child: Text("NUTRIENTS",
+                        style: Theme.of(context).textTheme.headline5)),
+                // snapshot.data.nutrients.forEach((n) {
+                //   Text(n.toString() ?? "");
+                // })
                 SizedBox(
                   height: 10,
+                ),
+                Container(
+                  width: 300,
+                  child: new Column(
+                    children: <Widget>[
+                      for (var nutrient in snapshot.data.nutrients)
+                        ListTile(
+                          visualDensity:
+                              VisualDensity(horizontal: 4, vertical: -4.0),
+
+                          minLeadingWidth: 150,
+                          leading: Text(nutrient["name"]),
+                          // leading: Icon(Icons.fiber_manual_record),
+                          title: new Text(
+                            nutrient["amount"].toString() +
+                                " " +
+                                nutrient["unit"].toString(),
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ],
             )));

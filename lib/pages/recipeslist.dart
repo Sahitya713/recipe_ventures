@@ -27,7 +27,7 @@ class _RecipeListState extends State<RecipeList> {
 
   Widget _buildRecipesList(List<String> ingredientList) {
     return FutureBuilder(
-        future: rc.generateRecipes(ingredients: ingredientList),
+        future: rc.generateRecipes(ingredientList),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Padding(
@@ -51,7 +51,7 @@ class _RecipeListState extends State<RecipeList> {
 
   @override
   Widget build(BuildContext context) {
-    rc.generateRecipes(ingredients: globals.selectedIngredients);
+    rc.generateRecipes(globals.selectedIngredients);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
