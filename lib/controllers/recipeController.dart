@@ -42,7 +42,7 @@ class RecipeController {
   // get recipe details by passing in recipe id. returns a Recipe class instance.
   Future getRecipe(String id) async {
     var url = Uri.https('api.spoonacular.com', '/recipes/$id/information', {
-      "apiKey": "fdaee5a82b29439689e4bda0644cc60f",
+      "apiKey": "8f75676c728a4e7ebac546f628cb0dfa",
       "includeNutrition": "true",
     });
     var response = await http.get(url);
