@@ -7,9 +7,13 @@ import 'package:recipe_ventures/data/recipe.dart';
 
 class RecipeController {
   // generates recipes. pass in a list of ingredients. returns a json object with the recipes (curently returns 10)
-  Future generateRecipes(List<String> ingredients) async {
+
+  Future generateRecipes(
+      {List<String> ingredients,
+      String key = "fdaee5a82b29439689e4bda0644cc60f"}) async {
+    print(key);
     var url = Uri.https('api.spoonacular.com', '/recipes/findByIngredients', {
-      "apiKey": "fdaee5a82b29439689e4bda0644cc60f",
+      "apiKey": "8f75676c728a4e7ebac546f628cb0dfa",
       "ingredients": ingredients.join(","),
       "number": "5",
       "sort": "max-used-ingredients"
@@ -28,6 +32,10 @@ class RecipeController {
       return res;
     } else {
       print(response.statusCode);
+      if (response.statusCode == 402) {
+        generateRecipes(
+            ingredients: ingredients, key: "8f75676c728a4e7ebac546f628cb0dfa");
+      }
     }
   }
 
